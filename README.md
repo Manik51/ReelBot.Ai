@@ -74,3 +74,42 @@ An automated, browser-based viral short video creator inspired by MoneyPrinterTu
   .\venv\Scripts\activate
   pip install -r requirements.txt
   python run.py
+🔑 Setting Up API Keys (100% Free)
+​অ্যাপের নেভিগেশন বারের ⚙️ API Settings অপশনে গিয়ে কি-গুলো সেট করুন:
+​Google Gemini API Key: Google AI Studio থেকে ফ্রি কী সংগ্রহ করুন।
+​Pexels API Key: Pexels API থেকে ফ্রি কী নিন।
+​Pixabay API Key: Pixabay API Docs থেকে ফ্রি কী সংগ্রহ করুন।
+​(নোট: Pexels বা Pixabay কি না থাকলেও সিস্টেমের বিল্ট-ইন ডায়নামিক মোশন জেনারেটরের মাধ্যমে ভিডিও রেন্ডারিং সফলভাবে সম্পন্ন হবে)
+​📂 Project Structure
+
+ReelBot.Ai/
+├── backend/
+│   ├── config.py              # Application settings, presets & paths
+│   ├── app.py                 # FastAPI server, endpoints & background tasks
+│   └── services/
+│       ├── gemini_service.py   # Gemini AI viral script generator
+│       ├── tts_service.py      # Voiceover synthesis & word timestamp tracker
+│       ├── media_service.py    # Pexels & Pixabay video search/download engine
+│       ├── subtitle_service.py # Alex Hormozi animated ASS subtitle generator
+│       └── video_composer.py  # FFmpeg composition, audio ducking & export
+├── frontend/
+│   ├── index.html             # Single Page Web App structure
+│   ├── style.css              # Dark glassmorphic design & Hormozi animations
+│   ├── app.js                 # Client-side workflow & real-time progress polling
+│   └── assets/                # Logos & icons
+├── storage/
+│   ├── bgm/                   # Background music tracks (.mp3)
+│   ├── outputs/               # Rendered final viral short videos (.mp4)
+│   └── temp/                  # Workspace for clip chunks and temp files
+├── ReelBot_Colab.ipynb        # 1-Click Google Colab Cloud Notebook
+├── run.py                     # Entrypoint script with auto browser launch
+├── start_app.bat              # Windows 1-click batch launcher
+└── requirements.txt           # Python dependencies
+
+🎯 Bengali Guide (ব্যবহার নির্দেশিকা)
+​অ্যাপ চালু করুন: Google Colab-এর লিঙ্ক অথবা উইন্ডোজে start_app.bat ফাইলে ক্লিক করে অ্যাপ ওপেন করুন।
+​API Key সেটআপ: উপরে ডানদিকের ⚙️ API Settings বাটনে ক্লিক করে ফ্রি Gemini ও Pexels API Key দিয়ে Save করুন।
+​Topic নির্বাচন: ভিডিওর টপিক লিখুন (যেমন: 5 Dark Psychology Tricks That Actually Work) অথবা ভাইরাল আইডিয়া চিপসে ক্লিক করুন।
+​Generate Script: Generate Viral Script বাটনে ক্লিক করলে Gemini AI দৃশ্যভিত্তিক চিত্রনাট্য ও ভিজ্যুয়াল কিওয়ার্ড তৈরি করে দেবে।
+​Customization: নিজের পছন্দমতো ভয়েস (English / Bengali / Hindi), Alex Hormozi স্টাইল সাবটাইটেল এবং ব্যাকগ্রাউন্ড মিউজিক সিলেক্ট করুন।
+​Generate Video: Generate Complete Video বাটনে ক্লিক করুন। কয়েক সেকেন্ডের মধ্যে ফুল HD 1080x1920 ভার্টিকাল রিল তৈরি হয়ে যাবে এবং ব্রাউজার থেকেই প্রিভিউ দেখে ডাউনলোড করতে পারবেন।
