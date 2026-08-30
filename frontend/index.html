@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ReelBot.Ai (Beta) | AI Viral Shorts & Reels Creator</title>
+  
+  <!-- PWA & Mobile Support -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#800020">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ReelBot">
+  <link rel="apple-touch-icon" href="/assets/manik_shil.png">
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="app-nav">
+    <div class="nav-brand">
+      <div class="skull-logo-box">
+        <span class="skull-icon">💀</span>
+      </div>
+      <div>
+        <h1>ReelBot<span class="highlight">.Ai</span> <span class="tag beta-tag">BETA</span></h1>
+        <p class="tagline">Viral 60s Shorts & Reels Engine • 100% Free</p>
+      </div>
+    </div>
+
+    <div class="nav-center-links">
+      <a href="#step-topic" class="nav-link">Studio</a>
+      <button id="open-creator-modal-nav-btn" class="nav-link-btn">About Developer</button>
+      <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=manikshil51@gmail.com&item_name=Support+ReelBot.Ai+Development&currency_code=USD" target="_blank" class="btn-coffee-nav">
+        ☕ Buy Me a Coffee
+      </a>
+    </div>
+
+    <div class="nav-actions">
+      <button id="open-settings-btn" class="btn btn-secondary btn-configure-nav">⚙️ Configure</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- STEP 1: TRENDING TOPICS & SCRIPT GENERATION -->
+    <section class="card step-section" id="step-topic">
+      <div class="step-header">
+        <span class="step-num">1</span>
+        <div>
+          <h2>Choose or Discover Viral Video Topics</h2>
+          <p class="step-desc">Pick from curated trends below, or click <strong>Find Trends</strong> to search live viral algorithms.</p>
+        </div>
+      </div>
+
+      <!-- Trending Topics Section with Find Trends Button -->
+      <div class="trending-section">
+        <div class="trending-header-row">
+          <div class="trending-header-title">
+            <span class="fire-icon">🔥</span>
+            <span class="trending-title">RECENT VIRAL TRENDING TOPICS</span>
+          </div>
+          <button id="find-trends-btn" class="btn-find-trends">
+            <span class="btn-icon">⚡</span> Find Trends (AI Search)
+          </button>
+        </div>
+
+        <div class="trending-grid" id="trending-grid-container">
+          <button class="chip trending-chip" data-topic="5 Dark Psychological Tricks That Actually Work In Real Life" data-tone="Storytelling / Suspense">
+            <span class="chip-emoji">💀</span> 5 Dark Psychology Tricks <span class="chip-views">8.5M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="Why 99% Of People Stay Poor And 3 Rules To Break Free" data-tone="High Energy / Viral">
+            <span class="chip-emoji">💰</span> Wealth & Money Rules <span class="chip-views">12.4M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="The Scariest Discovery Found at the Deepest Edge of the Ocean" data-tone="Storytelling / Suspense">
+            <span class="chip-emoji">🌊</span> Mariana Trench Secrets <span class="chip-views">6.1M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="3 CIA Body Language Tricks to Spot a Liar in 5 Seconds" data-tone="Storytelling / Suspense">
+            <span class="chip-emoji">👁️</span> Read People Like CIA <span class="chip-views">9.2M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="The 2-Minute Habit Rule That Destroys Laziness Forever" data-tone="Motivational / Powerful">
+            <span class="chip-emoji">⚡</span> 2-Minute Habit Hack <span class="chip-views">4.8M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="How Autonomous AI Agents Will Reshape Humanity by 2027" data-tone="High Energy / Viral">
+            <span class="chip-emoji">🤖</span> AI Job Shock In 2027 <span class="chip-views">7.3M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="3 Stoic Rules For Men to Become Emotionally Unstoppable" data-tone="Motivational / Powerful">
+            <span class="chip-emoji">⚔️</span> Stoic Mindset Rules <span class="chip-views">5.9M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="The Creepy Unsolved Disappearance Of Flight 370" data-tone="Storytelling / Suspense">
+            <span class="chip-emoji">⏳</span> Unsolved Air Mystery <span class="chip-views">10.1M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="How Billionaires Legally Pay 0% Taxes in 3 Steps" data-tone="Informative / Documentary">
+            <span class="chip-emoji">💎</span> How Billionaires Pay 0% Tax <span class="chip-views">8.9M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="What Actually Happens to Your Brain on 4 Hours of Sleep" data-tone="Informative / Documentary">
+            <span class="chip-emoji">🧠</span> Brain On 4-Hour Sleep <span class="chip-views">6.8M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="Inside the $500 Million Secret Supercar Vault of Dubai Royalty" data-tone="High Energy / Viral">
+            <span class="chip-emoji">🏎️</span> Dubai Prince Supercars <span class="chip-views">14.2M</span>
+          </button>
+          <button class="chip trending-chip" data-topic="The Simulation Theory Proof That Confuses Top Quantum Physicists" data-tone="Storytelling / Suspense">
+            <span class="chip-emoji">🌌</span> Simulation Theory Proof <span class="chip-views">11.1M</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 18px;">
+        <label for="video-topic">Selected Video Topic / Prompt</label>
+        <textarea id="video-topic" rows="2" placeholder="Click any trending topic above or write your own custom idea...">5 Dark Psychological Tricks That Actually Work In Real Life</textarea>
+      </div>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label for="script-lang">Narration Language</label>
+          <select id="script-lang">
+            <option value="English" selected>English (US / Global)</option>
+            <option value="Hindi">Hindi (हिंदी Voice + Hinglish Subs)</option>
+            <option value="Bengali">Bengali (বাংলা Voice + Banglish Subs)</option>
+            <option value="Spanish">Spanish (Español)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="script-tone">Tone & Energy</label>
+          <select id="script-tone">
+            <option value="High Energy / Viral" selected>⚡ High Energy / Viral (MrBeast Pacing)</option>
+            <option value="Storytelling / Suspense">🕵️ Storytelling / Suspense (Alex Hormozi)</option>
+            <option value="Motivational / Powerful">💪 Motivational / Powerful</option>
+            <option value="Informative / Documentary">📚 Informative / Deep Dive</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="target-duration">Target Duration</label>
+          <select id="target-duration">
+            <option value="60" selected>60 Seconds (18-20 Rapid Scenes)</option>
+            <option value="45">45 Seconds (14-15 Rapid Scenes)</option>
+            <option value="30">30 Seconds (9-10 Rapid Scenes)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button id="generate-script-btn" class="btn btn-primary btn-neon-red">
+          <span class="btn-icon">⚡</span> Generate Viral 18-Scene Script
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2: SCRIPT & SCENES EDITOR (HIDDEN INITIALLY) -->
+    <section class="card step-section hidden" id="step-script-editor">
+      <div class="step-header">
+        <span class="step-num">2</span>
+        <div class="title-with-badge">
+          <div>
+            <h2 id="script-title-display">Generated Scene-by-Scene Script</h2>
+            <p class="step-desc">18-20 rapid visual scenes (3s each). Review and customize voice narration and viral on-screen subtitles.</p>
+          </div>
+          <span id="estimated-duration-badge" class="badge badge-info">⏱️ ~60s</span>
+        </div>
+      </div>
+
+      <div id="scenes-container" class="scenes-list">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- STEP 3: STUDIO CUSTOMIZER (VOICE, SUBTITLES & BGM) -->
+    <section class="card step-section hidden" id="step-customization">
+      <div class="step-header">
+        <span class="step-num">3</span>
+        <div>
+          <h2>Studio Customization & Video Synthesis</h2>
+          <p class="step-desc">Select crystal-clear AI Voiceover, 1.5x pacing, Alex Hormozi animated captions, and ducked background music.</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="voice-select">🎙️ AI Voiceover (Auto-Matched for Crystal-Clear Pronunciation)</label>
+          <select id="voice-select">
+            <!-- Populated via API -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="voice-rate">⚡ Speech Delivery Speed & Sync</label>
+          <select id="voice-rate">
+            <option value="+35%" selected>⚡ 1.4x - 1.5x Viral Shorts Pacing (Recommended)</option>
+            <option value="+50%">🚀 1.5x Ultra Rapid Fire</option>
+            <option value="+20%">🔥 1.25x Dynamic Speed</option>
+            <option value="+0%">🎙️ 1.0x Normal Speed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="subtitle-style-select">🔥 Alex Hormozi Subtitle Style (Hinglish/Banglish/English)</label>
+          <select id="subtitle-style-select">
+            <!-- Populated via API -->
+          </select>
+          <div class="subtitle-preview-box">
+            <div id="subtitle-preview-text" class="sub-preview hormozi-yellow">
+              STOP SCROLLING <span class="highlight-word">RIGHT NOW!</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="bgm-select">🎵 Background Music (Auto-Ducked under Voice)</label>
+            <button id="open-configure-bgm-btn" class="link-hint-btn">⚙️ Manage Music Tracks ↗</button>
+          </div>
+          <select id="bgm-select">
+            <!-- Populated via API -->
+          </select>
+          <div class="volume-row">
+            <label for="bgm-volume">BGM Volume: <span id="bgm-vol-val">15%</span></label>
+            <input type="range" id="bgm-volume" min="0" max="40" value="15">
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row" style="margin-top: 24px;">
+        <button id="generate-video-btn" class="btn btn-success btn-large btn-block btn-neon-wine">
+          <span class="btn-icon">🚀</span> Render Complete 1080x1920 Viral Short Video
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 4: REALTIME PIPELINE PROGRESS & LIVE TERMINAL LOGS -->
+    <section class="card step-section hidden" id="step-progress">
+      <div class="step-header">
+        <span class="step-num">4</span>
+        <div>
+          <h2>Synthesizing & Rendering Your Video</h2>
+          <p class="step-desc">Watch live progress below with real-time terminal streaming logs and stage animations.</p>
+        </div>
+      </div>
+
+      <!-- Animated Stage Indicator -->
+      <div class="stage-animation-container">
+        <div id="stage-icon-box" class="stage-icon-box pulse-anim">
+          <span id="stage-icon">🎙️</span>
+        </div>
+        <div class="stage-details">
+          <h3 id="progress-stage" class="stage-headline">Initializing rendering pipeline...</h3>
+          <p id="stage-sub" class="stage-sub">Setting up multi-threaded FFmpeg buffers...</p>
+        </div>
+      </div>
+
+      <div class="progress-box">
+        <div class="progress-bar-container">
+          <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="progress-info">
+          <span id="progress-status-text" class="progress-stage">Processing...</span>
+          <span id="progress-percent" class="progress-percent">0%</span>
+        </div>
+      </div>
+
+      <div class="pipeline-steps-grid">
+        <div id="pipe-voice" class="pipe-step">1. 🎙️ Crystal Voiceover</div>
+        <div id="pipe-subs" class="pipe-step">2. 🔥 Hormozi Captions</div>
+        <div id="pipe-media" class="pipe-step">3. 🎥 18-20 HD Clips</div>
+        <div id="pipe-render" class="pipe-step">4. ⚡ FFmpeg Composition</div>
+      </div>
+
+      <!-- Live Terminal Console Stream -->
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span class="terminal-title">REELBOT_AI_PIPELINE.LOG</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button id="resume-task-btn" class="btn-resume hidden">🔁 Resume Generation</button>
+            <span class="terminal-badge">LIVE STREAM</span>
+          </div>
+        </div>
+        <div id="terminal-logs" class="terminal-body">
+          <div class="log-line text-cyan">[00:00.00] ⚡ ReelBot.Ai Engine initialized. Waiting for task stream...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 5: VIDEO PREVIEW, YOUTUBE SEO PACK & 1-CLICK ACTIONS -->
+    <section class="card step-section hidden" id="step-result">
+      <div class="step-header">
+        <span class="step-num">5</span>
+        <div>
+          <h2>🎉 Your Viral Video is Ready!</h2>
+          <p class="step-desc">Preview your 1080x1920 9:16 vertical short below with burned animated subtitles and high-retention editing.</p>
+        </div>
+      </div>
+
+      <div class="result-layout">
+        <div class="player-wrapper">
+          <video id="final-video-player" controls autoplay loop playsinline class="video-player">
+            <source src="" type="video/mp4">
+            Your browser does not support HTML video.
+          </video>
+        </div>
+
+        <div class="download-sidebar">
+          <h3 id="result-title">Viral Short Title</h3>
+          
+          <a id="download-video-btn" href="#" download="viral_short.mp4" class="btn btn-primary btn-large btn-block btn-neon-red">
+            <span class="btn-icon">⬇️</span> Download HD Video (MP4)
+          </a>
+
+          <!-- YouTube Viral SEO Pack Card -->
+          <div class="seo-pack-box">
+            <div class="seo-pack-header">
+              <span>🚀 Viral YouTube SEO Metadata</span>
+              <button id="copy-all-seo-btn" class="btn-copy-mini">📋 Copy All</button>
+            </div>
+
+            <div class="seo-field">
+              <label>🎯 Click-Worthy Title:</label>
+              <div class="copy-input-row">
+                <input type="text" id="seo-title-input" readonly value="">
+                <button class="btn-copy-inline" onclick="copyField('seo-title-input', this)">Copy</button>
+              </div>
+            </div>
+
+            <div class="seo-field">
+              <label>📝 SEO Description:</label>
+              <div class="copy-input-row">
+                <textarea id="seo-desc-input" rows="2" readonly></textarea>
+                <button class="btn-copy-inline" onclick="copyField('seo-desc-input', this)">Copy</button>
+              </div>
+            </div>
+
+            <div class="seo-field">
+              <label>🏷️ Trending Viral #Tags:</label>
+              <div class="copy-input-row">
+                <input type="text" id="seo-tags-input" readonly value="">
+                <button class="btn-copy-inline" onclick="copyField('seo-tags-input', this)">Copy</button>
+              </div>
+            </div>
+
+            <a href="https://studio.youtube.com" target="_blank" class="btn-youtube-upload">
+              <span style="font-size: 16px;">▶️</span> Open YouTube Studio to Upload ↗
+            </a>
+          </div>
+
+          <button id="create-another-btn" class="btn btn-secondary btn-block" style="margin-top: 10px;">
+            🔄 Create Another Viral Video
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FLOATING DEVELOPER ACTION BUTTON -->
+  <button id="floating-creator-btn" class="floating-creator-btn" title="About the Creator">
+    <div class="floating-avatar-box">
+      <img src="/assets/manik_shil.png" alt="Manik Shil" class="floating-avatar-img">
+    </div>
+    <span class="floating-btn-text">💀 Manik Shil</span>
+  </button>
+
+  <!-- CREATOR DETAILS MODAL / DRAWER -->
+  <div id="creator-modal" class="modal-backdrop hidden">
+    <div class="modal-card creator-modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 22px;">💀</span>
+          <h3>About the Creator</h3>
+        </div>
+        <button id="close-creator-btn" class="btn-close">&times;</button>
+      </div>
+
+      <div class="creator-card-layout-modal">
+        <div class="creator-avatar-container">
+          <div class="avatar-ring-large">
+            <img src="/assets/manik_shil.png" alt="Manik Shil" class="creator-photo-large">
+          </div>
+          <div class="creator-badge-box">
+            <span class="creator-role-tag">👑 CREATOR & LEAD DEVELOPER</span>
+          </div>
+        </div>
+
+        <div class="creator-details">
+          <div>
+            <h2 class="creator-name">Manik Shil</h2>
+            <p class="creator-sub">Founder & Lead AI Engineer • ReelBot.Ai</p>
+          </div>
+
+          <div class="creator-chips-row">
+            <span class="mini-tag">AI Architecture</span>
+            <span class="mini-tag">Video Automation</span>
+            <span class="mini-tag">Open Source</span>
+          </div>
+
+          <div class="creator-story-box">
+            <h4 class="story-heading">💡 The Inspiration Behind ReelBot.Ai</h4>
+            <p class="creator-bio">
+              "The story of <strong>ReelBot.Ai</strong> began with a disruptive dream: Why should aspiring creators and storytellers pay hundreds of dollars every month for expensive AI video subscriptions just to make 60-second shorts?
+            </p>
+            <p class="creator-bio">
+              I built ReelBot.Ai to democratize viral video production — combining cutting-edge LLMs (Gemini AI), hyper-realistic neural voice synthesis, dynamic stock footage sourcing, and high-performance FFmpeg rendering into a single <strong>100% free, local-first engine</strong>. Everyone deserves the power to turn raw ideas into viral million-view reels in seconds."
+            </p>
+          </div>
+
+          <!-- PayPal Support -->
+          <div class="paypal-support-box">
+            <div class="paypal-support-text">
+              <h4>☕ Support Open-Source Innovation</h4>
+              <p>If ReelBot.Ai helped you create viral content or saved you expensive software bills, support future development with a coffee!</p>
+            </div>
+
+            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=manikshil51@gmail.com&item_name=Support+ReelBot.Ai+Development&currency_code=USD" target="_blank" class="btn btn-paypal btn-neon-wine">
+              <span class="paypal-icon">☕</span> Buy Me a Coffee
+            </a>
+          </div>
+
+          <div class="contact-email-row">
+            <span>PayPal & Inquiries: <strong>manikshil51@gmail.com</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIGURE MODAL (SETTINGS + STATUS BADGES + BULK BGM) -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">⚙️</span>
+          <h3>ReelBot.Ai Configuration</h3>
+        </div>
+        <button id="close-settings-btn" class="btn-close">&times;</button>
+      </div>
+
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <!-- Status Badges Inside Configure Modal -->
+        <div class="config-status-section">
+          <label style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">System Services Connection Status</label>
+          <div class="status-group-modal" id="status-badges">
+            <span id="gemini-badge" class="badge badge-pending">Gemini AI</span>
+            <span id="pexels-badge" class="badge badge-pending">Pexels Stock</span>
+            <span id="pixabay-badge" class="badge badge-pending">Pixabay Stock</span>
+          </div>
+        </div>
+
+        <!-- API Keys -->
+        <div class="form-group" style="margin-top: 14px;">
+          <div class="label-row">
+            <label for="setting-gemini-key">Google Gemini API Key (Required for Scripts)</label>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="link-hint">Get Free Key ↗</a>
+          </div>
+          <input type="password" id="setting-gemini-key" placeholder="AIzaSy...">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="setting-pexels-key">Pexels API Key (Free HD Stock Videos)</label>
+            <a href="https://www.pexels.com/api/" target="_blank" class="link-hint">Get Free Key ↗</a>
+          </div>
+          <input type="password" id="setting-pexels-key" placeholder="Pexels API Key...">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="setting-pixabay-key">Pixabay API Key (Backup Stock Videos)</label>
+            <a href="https://pixabay.com/api/docs/" target="_blank" class="link-hint">Get Free Key ↗</a>
+          </div>
+          <input type="password" id="setting-pixabay-key" placeholder="Pixabay Key...">
+        </div>
+
+        <!-- Bulk BGM Upload Section Inside Configure -->
+        <div class="form-group" style="margin-top: 20px;">
+          <label style="font-size: 13px; font-weight: 700; color: var(--wine-bright);">📁 Background Music (Bulk MP3 Uploader)</label>
+          <div class="upload-zone-container">
+            <label for="bulk-bgm-input" class="bulk-upload-label">
+              <span style="font-size: 28px;">📁</span>
+              <strong>Click to Select or Drop Multiple MP3 Tracks</strong>
+              <span style="font-size: 11px; color: var(--text-muted);">Upload downloaded YouTube Studio tracks here at once</span>
+            </label>
+            <input type="file" id="bulk-bgm-input" multiple accept=".mp3" style="display: none;">
+            <div id="upload-status-msg" style="font-size: 12px; color: var(--wine-bright); font-weight: 700; margin-top: 6px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="cancel-settings-btn" class="btn btn-secondary">Close</button>
+        <button id="save-settings-btn" class="btn btn-primary btn-neon-red">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
