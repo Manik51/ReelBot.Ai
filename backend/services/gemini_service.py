@@ -8,10 +8,10 @@ from google.genai import types
 
 class GeminiService:
     MODELS_ORDER = [
-        "gemini-3.5-flash-lite",
-        "gemini-3.6-flash",
-        "gemini-3.7-flash",
-        "gemini-flash-latest"
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
+        "gemini-2.0-flash",
+        "gemini-1.5-flash"
     ]
 
     TREND_NICHES = [
@@ -34,8 +34,6 @@ class GeminiService:
     @classmethod
     def find_trends(cls, api_key: str) -> List[Dict[str, Any]]:
         client = cls.get_client(api_key)
-        
-        # Pick 3-4 random niches each time for infinite diversity
         selected_niches = random.sample(cls.TREND_NICHES, k=4)
         current_time_seed = time.time()
         random_seed = random.randint(1000, 999999)
@@ -79,20 +77,11 @@ class GeminiService:
                 print(f"find_trends fallback from {model_name}: {e}")
                 continue
 
-        # Dynamic fallback generator if API temporarily limits
         curated_fallbacks = [
             {"title": "The Silence Trick That Controls Any Conversation", "category": "Psychology", "views_potential": f"{random.randint(7, 19)}.{random.randint(1, 9)}M Views", "emoji": "💀", "tone": "Storytelling / Suspense"},
             {"title": "Why The Wealthiest 1% Never Keep Cash in Banks", "category": "Wealth", "views_potential": f"{random.randint(8, 22)}.{random.randint(1, 9)}M Views", "emoji": "💰", "tone": "High Energy / Viral"},
             {"title": "The Sound Recorded 35,000 Feet Under the Ocean", "category": "Ocean", "views_potential": f"{random.randint(6, 15)}.{random.randint(1, 9)}M Views", "emoji": "🌊", "tone": "Storytelling / Suspense"},
-            {"title": "3 Signs Someone Is Secretly Jealous of You", "category": "Psychology", "views_potential": f"{random.randint(9, 18)}.{random.randint(1, 9)}M Views", "emoji": "👁️", "tone": "Storytelling / Suspense"},
-            {"title": "The Quantum Physicist Warning About Parallel Realities", "category": "Space", "views_potential": f"{random.randint(7, 16)}.{random.randint(1, 9)}M Views", "emoji": "🌌", "tone": "Informative / Documentary"},
-            {"title": "3 Ancient Spartan Habits to Build Ruthless Focus", "category": "Stoic", "views_potential": f"{random.randint(5, 14)}.{random.randint(1, 9)}M Views", "emoji": "⚔️", "tone": "Motivational / Powerful"},
-            {"title": "What 10 Minutes of Overthinking Does to Your Arteries", "category": "Brain", "views_potential": f"{random.randint(8, 17)}.{random.randint(1, 9)}M Views", "emoji": "🧠", "tone": "Informative / Documentary"},
-            {"title": "The Classified Cold War Submarine Incident in 1968", "category": "Mystery", "views_potential": f"{random.randint(6, 13)}.{random.randint(1, 9)}M Views", "emoji": "⏳", "tone": "Storytelling / Suspense"},
-            {"title": "How Ultra-Rich Monopolize Prime Real Estate Free", "category": "Wealth", "views_potential": f"{random.randint(10, 25)}.{random.randint(1, 9)}M Views", "emoji": "💎", "tone": "High Energy / Viral"},
-            {"title": "The Black Hole That Is Moving Towards Earth Faster", "category": "Space", "views_potential": f"{random.randint(12, 28)}.{random.randint(1, 9)}M Views", "emoji": "🚀", "tone": "Storytelling / Suspense"},
-            {"title": "How Criminal Interrogators Break Anyone in 3 Steps", "category": "Psychology", "views_potential": f"{random.randint(9, 21)}.{random.randint(1, 9)}M Views", "emoji": "🔥", "tone": "Storytelling / Suspense"},
-            {"title": "The 5-Second Stoic Rule When Disrespected in Public", "category": "Stoic", "views_potential": f"{random.randint(7, 18)}.{random.randint(1, 9)}M Views", "emoji": "👑", "tone": "Motivational / Powerful"}
+            {"title": "3 Signs Someone Is Secretly Jealous of You", "category": "Psychology", "views_potential": f"{random.randint(9, 18)}.{random.randint(1, 9)}M Views", "emoji": "👁️", "tone": "Storytelling / Suspense"}
         ]
         random.shuffle(curated_fallbacks)
         return curated_fallbacks
@@ -117,17 +106,13 @@ class GeminiService:
             "2. Viral 3-Second Hook: Scene 1 must immediately grab attention and stop the scroll with an explosive curiosity gap.\n"
             "3. High Dopamine & Dynamic Storytelling: Write a fresh, unique, engaging narrative every single time. Never produce predictable or repetitive lines.\n"
             "4. Multi-Language & Transliteration Rules:\n"
-            "   - If language is 'Hindi': narration MUST be natural spoken Hindi (Devanagari script or conversational Hindi), and subtitle_text MUST be Latin/English alphabet Hinglish (e.g. 'AANKHON KI PUTLIYAN SACH BATATI HAIN').\n"
-            "   - If language is 'Bengali': narration MUST be natural spoken Bengali (Bangla script), and subtitle_text MUST be Latin/English alphabet Banglish (e.g. 'EI 3TI NIYOM TOMAKE OPARAJEYO KORBE').\n"
+            "   - If language is 'Hindi': narration MUST be natural spoken Hindi (Devanagari script), and subtitle_text MUST be Latin alphabet Hinglish.\n"
+            "   - If language is 'Bengali' or 'Bangla': narration MUST be natural spoken Bengali (Bangla script), and subtitle_text MUST be Latin alphabet Banglish.\n"
             "   - If language is 'English': narration and subtitle_text are standard punchy English in UPPERCASE for subtitles.\n"
             "5. EXACT LITERAL STOCK FOOTAGE KEYWORDS (STRICT RULE):\n"
             "   - Stock video search engines (Pexels / Pixabay) search for physical, visible objects.\n"
             "   - DO NOT provide abstract words like 'psychology', 'mindset', 'future', 'success'.\n"
             "   - ALWAYS provide 2-3 literal physical nouns in English that describe exactly what is seen in the clip.\n"
-            "     * If voice speaks about eye dilation: keywords: ['macro eye pupil dilation zoom', 'dramatic iris lighting effect']\n"
-            "     * If voice speaks about deep ocean: keywords: ['dark ocean abyss underwater', 'scuba diver flashlight deep sea']\n"
-            "     * If voice speaks about money/wealth: keywords: ['counting stack of cash slow motion', 'luxury gold bullion vault']\n"
-            "     * If voice speaks about brain/thought: keywords: ['glowing human brain neural network', 'person thinking in shadow']\n"
             "6. VIRAL YOUTUBE SEO METADATA:\n"
             "   - Generate click-worthy YouTube Shorts Title (with emoji), high-retention Description, and trending #Shorts Hashtags."
         )
@@ -148,8 +133,8 @@ Return a JSON object with this exact schema:
   "seo": {{
     "youtube_title": "Viral Click-Worthy Title (under 60 chars) 😱 #shorts",
     "youtube_description": "2-3 sentence engaging description with keywords and call-to-action.",
-    "hashtags": ["#shorts", "#viral", "#psychology", "#trending", "#reels"],
-    "tags": ["keyword 1", "keyword 2", "keyword 3", "keyword 4"]
+    "hashtags": ["#shorts", "#viral", "#trending", "#reels"],
+    "tags": ["keyword 1", "keyword 2", "keyword 3"]
   }},
   "scenes": [
     {{
