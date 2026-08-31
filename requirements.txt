@@ -10,3 +10,8 @@ pillow>=10.0.0
 soundfile>=0.12.1
 aiofiles>=24.1.0
 python-multipart>=0.0.18
+requests
+openai-whisper
+f5-tts
+torch
+torchaudio
