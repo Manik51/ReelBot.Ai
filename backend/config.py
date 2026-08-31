@@ -18,6 +18,7 @@ class Settings:
 
     # API Keys
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+    SARVAM_API_KEY = os.getenv('SARVAM_API_KEY', '')
     PEXELS_API_KEY = os.getenv('PEXELS_API_KEY', '')
     PIXABAY_API_KEY = os.getenv('PIXABAY_API_KEY', '')
 
@@ -27,41 +28,24 @@ class Settings:
     FPS = 30
     DEFAULT_BGM_VOLUME = 0.15
 
-    # Voice Presets with Crystal-Clear Native Pronunciation
+    # Pure Studio Quality Voice Presets (Sarvam AI + F5-TTS + Kokoro)
     VOICE_PRESETS = [
-        # Hindi Native Ultra-Clear Studio Voices (100% Crystal-Clear Native Pronunciation)
-        {'id': 'hi-IN-MadhurNeural', 'name': '🇮🇳 Madhur (Hindi Male - Deep Viral Storyteller)', 'gender': 'Male', 'lang': 'Hindi', 'provider': 'edge', 'recommended_for': 'Hindi'},
-        {'id': 'hi-IN-SwaraNeural', 'name': '🇮🇳 Swara (Hindi Female - Expressive & Engaging)', 'gender': 'Female', 'lang': 'Hindi', 'provider': 'edge', 'recommended_for': 'Hindi'},
+        # --- Sarvam AI (Hyper-Realistic Studio Voice - Bengali & Hindi) ---
+        {'id': 'sarvam:meera', 'name': '🔥 Sarvam AI - Meera (Bengali/Hindi Female - Ultra Natural)', 'gender': 'Female', 'lang': 'Bengali', 'provider': 'sarvam', 'recommended_for': 'Bengali'},
+        {'id': 'sarvam:amol', 'name': '🔥 Sarvam AI - Amol (Bengali/Hindi Male - Ultra Natural)', 'gender': 'Male', 'lang': 'Bengali', 'provider': 'sarvam', 'recommended_for': 'Bengali'},
+        {'id': 'sarvam:arvind', 'name': '🔥 Sarvam AI - Arvind (Hindi/Bengali Deep Storyteller Male)', 'gender': 'Male', 'lang': 'Hindi', 'provider': 'sarvam', 'recommended_for': 'Hindi'},
+        {'id': 'sarvam:pavithra', 'name': '✨ Sarvam AI - Pavithra (Expressive Female)', 'gender': 'Female', 'lang': 'Hindi', 'provider': 'sarvam', 'recommended_for': 'Hindi'},
 
-        # Bengali Native Ultra-Clear Studio Voices (100% Crystal-Clear Native Pronunciation)
-        {'id': 'bn-IN-TanishaaNeural', 'name': '🇮🇳 Tanishaa (Bengali Female - High-Energy Viral)', 'gender': 'Female', 'lang': 'Bengali', 'provider': 'edge', 'recommended_for': 'Bengali'},
-        {'id': 'bn-BD-PradeepNeural', 'name': '🇧🇩 Pradeep (Bengali Male - Deep Storyteller)', 'gender': 'Male', 'lang': 'Bengali', 'provider': 'edge', 'recommended_for': 'Bengali'},
-        {'id': 'bn-BD-NabanitaNeural', 'name': '🇧🇩 Nabanita (Bengali Female - Sweet & Clear)', 'gender': 'Female', 'lang': 'Bengali', 'provider': 'edge', 'recommended_for': 'Bengali'},
-        {'id': 'bn-IN-BashkarNeural', 'name': '🇮🇳 Bashkar (Bengali Male - Natural & Smooth)', 'gender': 'Male', 'lang': 'Bengali', 'provider': 'edge', 'recommended_for': 'Bengali'},
+        # --- F5-TTS (Local Studio Voice Cloning) ---
+        {'id': 'f5:custom', 'name': '🎙️ F5-TTS Studio (Local Voice Clone)', 'gender': 'Custom', 'lang': 'Bengali', 'provider': 'f5', 'recommended_for': 'Bengali'},
 
-        # English SOTA Kokoro-82M Open-Source Voices (ElevenLabs Competitor)
+        # --- Kokoro-82M SOTA (English Viral Voices) ---
         {'id': 'kokoro:am_adam', 'name': '🔥 Kokoro - Adam (Deep Viral Podcast Male)', 'gender': 'Male', 'lang': 'English', 'provider': 'kokoro', 'recommended_for': 'English'},
         {'id': 'kokoro:af_bella', 'name': '✨ Kokoro - Bella (Expressive Storyteller Female)', 'gender': 'Female', 'lang': 'English', 'provider': 'kokoro', 'recommended_for': 'English'},
         {'id': 'kokoro:am_michael', 'name': '🚀 Kokoro - Michael (Punchy Viral Shorts Male)', 'gender': 'Male', 'lang': 'English', 'provider': 'kokoro', 'recommended_for': 'English'},
         {'id': 'kokoro:af_sarah', 'name': '💎 Kokoro - Sarah (Crisp Professional Female)', 'gender': 'Female', 'lang': 'English', 'provider': 'kokoro', 'recommended_for': 'English'},
-        {'id': 'kokoro:af_nicole', 'name': '🌟 Kokoro - Nicole (Warm Smooth Female)', 'gender': 'Female', 'lang': 'English', 'provider': 'kokoro', 'recommended_for': 'English'},
-        {'id': 'kokoro:am_george', 'name': '🎙️ Kokoro - George (British Cinematic Male)', 'gender': 'Male', 'lang': 'English', 'provider': 'kokoro', 'recommended_for': 'English'},
-
-        # English Multilingual Broadcast Neural Voices
-        {'id': 'en-US-AndrewMultilingualNeural', 'name': '🇺🇸 Andrew (Natural Multilingual Male)', 'gender': 'Male', 'lang': 'English', 'provider': 'edge', 'recommended_for': 'English'},
-        {'id': 'en-US-AvaMultilingualNeural', 'name': '🇺🇸 Ava (Natural Multilingual Female)', 'gender': 'Female', 'lang': 'English', 'provider': 'edge', 'recommended_for': 'English'},
-        {'id': 'en-US-BrianMultilingualNeural', 'name': '🇺🇸 Brian (Deep Cinematic Storyteller)', 'gender': 'Male', 'lang': 'English', 'provider': 'edge', 'recommended_for': 'English'},
-        {'id': 'en-US-EmmaMultilingualNeural', 'name': '🇺🇸 Emma (Emotional Storyteller Female)', 'gender': 'Female', 'lang': 'English', 'provider': 'edge', 'recommended_for': 'English'},
-        {'id': 'en-US-ChristopherNeural', 'name': '🇺🇸 Christopher (High-Energy Shorts Male)', 'gender': 'Male', 'lang': 'English', 'provider': 'edge', 'recommended_for': 'English'},
-        
-        # --- Sarvam AI (Hyper-Realistic Studio Voices) ---
-        {"id": "sarvam:meera", "name": "🔥 Sarvam AI - Meera (Bengali/Hindi Female - Ultra Natural)", "language": "Indic"},
-        {"id": "sarvam:amol", "name": "🔥 Sarvam AI - Amol (Bengali/Hindi Male - Ultra Natural)", "language": "Indic"},
-        {"id": "sarvam:arvind", "name": "🔥 Sarvam AI - Arvind (Deep Storyteller Male)", "language": "Indic"},
-    
-        # --- F5-TTS (Local Studio Cloning) ---
-        {"id": "f5:custom", "name": "🎙️ F5-TTS Studio (Local Voice Clone)", "language": "Multi"},
-     ]
+        {'id': 'kokoro:am_george', 'name': '🎙️ Kokoro - George (British Cinematic Male)', 'gender': 'Male', 'lang': 'English', 'provider': 'kokoro', 'recommended_for': 'English'}
+    ]
 
     # Alex Hormozi Subtitle Styles
     SUBTITLE_STYLES = [
