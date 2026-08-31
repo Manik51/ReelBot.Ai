@@ -54,14 +54,14 @@ class Settings:
         {'id': 'en-US-EmmaMultilingualNeural', 'name': '🇺🇸 Emma (Emotional Storyteller Female)', 'gender': 'Female', 'lang': 'English', 'provider': 'edge', 'recommended_for': 'English'},
         {'id': 'en-US-ChristopherNeural', 'name': '🇺🇸 Christopher (High-Energy Shorts Male)', 'gender': 'Male', 'lang': 'English', 'provider': 'edge', 'recommended_for': 'English'},
         
-    # --- Sarvam AI (Hyper-Realistic Studio Voices) ---
-    {"id": "sarvam:meera", "name": "🔥 Sarvam AI - Meera (Bengali/Hindi Female - Ultra Natural)", "language": "Indic"},
-    {"id": "sarvam:amol", "name": "🔥 Sarvam AI - Amol (Bengali/Hindi Male - Ultra Natural)", "language": "Indic"},
-    {"id": "sarvam:arvind", "name": "🔥 Sarvam AI - Arvind (Deep Storyteller Male)", "language": "Indic"},
+        # --- Sarvam AI (Hyper-Realistic Studio Voices) ---
+        {"id": "sarvam:meera", "name": "🔥 Sarvam AI - Meera (Bengali/Hindi Female - Ultra Natural)", "language": "Indic"},
+        {"id": "sarvam:amol", "name": "🔥 Sarvam AI - Amol (Bengali/Hindi Male - Ultra Natural)", "language": "Indic"},
+        {"id": "sarvam:arvind", "name": "🔥 Sarvam AI - Arvind (Deep Storyteller Male)", "language": "Indic"},
     
-    # --- F5-TTS (Local Studio Cloning) ---
-    {"id": "f5:custom", "name": "🎙️ F5-TTS Studio (Local Voice Clone)", "language": "Multi"},
-    ]
+        # --- F5-TTS (Local Studio Cloning) ---
+        {"id": "f5:custom", "name": "🎙️ F5-TTS Studio (Local Voice Clone)", "language": "Multi"},
+     ]
 
     # Alex Hormozi Subtitle Styles
     SUBTITLE_STYLES = [
