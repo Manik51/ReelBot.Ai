@@ -8,10 +8,9 @@ from google.genai import types
 
 class GeminiService:
     MODELS_ORDER = [
-        "gemini-3.5-flash-lite",
-        "gemini-3.6-flash",
-        "gemini-3.7-flash",
-        "gemini-flash-latest"
+        "gemini-2.5-flash",
+        "gemini-2.0-flash",
+        "gemini-1.5-flash"
     ]
 
     TREND_NICHES = [
@@ -117,9 +116,9 @@ class GeminiService:
             "2. Viral 3-Second Hook: Scene 1 must immediately grab attention and stop the scroll with an explosive curiosity gap.\n"
             "3. High Dopamine & Dynamic Storytelling: Write a fresh, unique, engaging narrative every single time. Never produce predictable or repetitive lines.\n"
             "4. Multi-Language & Transliteration Rules:\n"
-            "   - If language is 'Hindi': narration MUST be natural spoken Hindi (Devanagari script or conversational Hindi), and subtitle_text MUST be Latin/English alphabet Hinglish (e.g. 'AANKHON KI PUTLIYAN SACH BATATI HAIN').\n"
-            "   - If language is 'Bengali': narration MUST be natural spoken Bengali (Bangla script), and subtitle_text MUST be Latin/English alphabet Banglish (e.g. 'EI 3TI NIYOM TOMAKE OPARAJEYO KORBE').\n"
-            "   - If language is 'English': narration and subtitle_text are standard punchy English in UPPERCASE for subtitles.\n"
+            "   - If language is 'Hindi': narration MUST be natural spoken Hindi in native Devanagari script for TTS engines (e.g. 'आंखों की पुतलियां सच बताती हैं।'), and subtitle_text MUST be UPPERCASE Hinglish in English alphabet (e.g. 'AANKHON KI PUTLIYAN SACH BATATI HAIN').\n"
+            "   - If language is 'Bengali' or 'Bangla': narration MUST be natural spoken Bengali in native Bangla script for TTS engines (e.g. 'এই ৩টি নিয়ম তোমাকে অপরাজেয় করে তুলবে।'), and subtitle_text MUST be UPPERCASE Banglish in English alphabet (e.g. 'EI 3TI NIYOM TOMAKE OPARAJEYO KORE TULBE').\n"
+            "   - If language is 'English': narration is punchy spoken English and subtitle_text is standard punchy English in UPPERCASE.\n"
             "5. EXACT LITERAL STOCK FOOTAGE KEYWORDS (STRICT RULE):\n"
             "   - Stock video search engines (Pexels / Pixabay) search for physical, visible objects.\n"
             "   - DO NOT provide abstract words like 'psychology', 'mindset', 'future', 'success'.\n"
@@ -135,7 +134,7 @@ class GeminiService:
         user_prompt = f"""
 Create an original, highly engaging {target_duration_sec}-second viral short video script on the topic: "{topic}".
 Random Creative Variation ID: {creative_seed}
-Language: {language}
+Target Language: {language}
 Tone & Style: {tone}
 Number of Scenes: Exactly {scene_count} rapid scenes (each 2.5 - 3.5 seconds).
 
@@ -154,8 +153,8 @@ Return a JSON object with this exact schema:
   "scenes": [
     {{
       "scene_id": 1,
-      "narration": "Exact spoken words for voiceover",
-      "subtitle_text": "LATIN UPPERCASE SUBTITLE (Hinglish/Banglish/English)",
+      "narration": "Exact spoken words for voiceover (Bengali/Hindi/English native script)",
+      "subtitle_text": "LATIN UPPERCASE SUBTITLE (Banglish/Hinglish/English)",
       "keywords": ["concrete physical english noun 1", "concrete physical noun 2"],
       "suggested_emoji": "🔥",
       "estimated_seconds": 3.0
