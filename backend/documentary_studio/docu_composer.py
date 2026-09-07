@@ -156,13 +156,19 @@ class DocuComposer:
             sub_ass_path = work_dir / "subtitles.ass"
             cls._generate_hormozi_subtitles(word_timings, sub_ass_path, subtitle_color, font_name)
 
-            # Burn subtitles & finalize
+            # Burn subtitles & finalize with unified 35mm film grain, moody contrast & vignette
             escaped_sub = str(sub_ass_path.resolve()).replace("\\", "/").replace(":", "\\:")
+            filter_master = (
+                f"[0:v]eq=contrast=1.12:brightness=-0.03:saturation=0.90,"
+                f"noise=alls=10:allf=t+u,"
+                f"vignette=PI/3.6[graded];"
+                f"[graded]subtitles='{escaped_sub}'[vfinal]"
+            )
             cmd_master = [
                 "ffmpeg", "-y",
                 "-i", str(video_concat),
                 "-i", str(mixed_audio),
-                "-filter_complex", f"[0:v]subtitles='{escaped_sub}'[vfinal]",
+                "-filter_complex", filter_master,
                 "-map", "[vfinal]",
                 "-map", "1:a",
                 "-c:v", "libx264",
@@ -211,6 +217,8 @@ class DocuComposer:
             cls._render_action_gif(beat, duration, theme, output_clip, work_dir, beat_idx)
         elif metaphor == "orbit_network":
             cls._render_orbit_network(beat, duration, theme, output_clip, work_dir, beat_idx)
+        elif metaphor == "cinematic_broll":
+            cls._render_cinematic_broll(beat, duration, theme, output_clip, work_dir, beat_idx)
         else:
             cls._render_parallax_cutout(beat, duration, theme, output_clip, work_dir, beat_idx)
 
@@ -232,9 +240,9 @@ class DocuComposer:
         filter_str = (
             "[0:v]scale=1080*2:1920*2:force_original_aspect_ratio=increase,"
             "crop=1080*2:1920*2,"
-            "zoompan=z='min(zoom+0.0014,1.20)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=30,"
-            "eq=brightness=-0.05:contrast=1.14:saturation=0.95,"
-            "vignette=PI/4[pan];"
+            "zoompan=z='min(zoom+0.0014,1.25)':x='iw/2-(iw/zoom/2)+sin(on/45)*28':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=30,"
+            "eq=brightness=-0.05:contrast=1.16:saturation=0.92,"
+            "vignette=PI/3.8[pan];"
             "[1:v]scale=1080:1920[stamp];"
             "[pan][stamp]overlay=0:0[outv]"
         )
@@ -307,7 +315,7 @@ class DocuComposer:
             "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
             "boxblur=8,eq=brightness=-0.22:contrast=1.2,vignette=PI/3[bg];"
             "[1:v]scale=920:920[paper];"
-            f"[bg][paper]overlay=(W-w)/2:(H-h)/2-80[slam]{hl_filter}"
+            f"[bg][paper]overlay=x='(W-w)/2':y='if(lt(t,0.15),(H-h)/2-80-(0.15-t)*2600,(H-h)/2-80)':eval=frame[slam]{hl_filter}"
         )
 
         cmd = [
@@ -407,12 +415,12 @@ class DocuComposer:
         if role_badge and role_badge.exists():
             filter_str = (
                 "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
-                "boxblur=4,eq=brightness=-0.18:contrast=1.18:saturation=0.85,"
-                "vignette=PI/4[bg];"
-                "[1:v]scale=-1:1050[fg];"
-                "[bg][fg]overlay=(W-w)/2:H-h-140[with_fg];"
+                "boxblur=5,eq=brightness=-0.20:contrast=1.20:saturation=0.85,"
+                "vignette=PI/3.5[bg];"
+                "[1:v]scale=-1:1080[fg];"
+                "[bg][fg]overlay=x='(W-w)/2+sin(t*1.2)*14':y='H-h-120-(t*16)':eval=frame[with_fg];"
                 "[with_fg][2:v]overlay=0:0[with_stamp];"
-                "[with_stamp][3:v]overlay=0:0[outv]"
+                "[with_stamp][3:v]overlay=x='(W-w)/2':y='H-170'[outv]"
             )
             inputs = [
                 "-stream_loop", "-1", "-i", str(bg_vid),
@@ -423,10 +431,10 @@ class DocuComposer:
         else:
             filter_str = (
                 "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
-                "boxblur=4,eq=brightness=-0.18:contrast=1.18:saturation=0.85,"
-                "vignette=PI/4[bg];"
-                "[1:v]scale=-1:1050[fg];"
-                "[bg][fg]overlay=(W-w)/2:H-h-140[with_fg];"
+                "boxblur=5,eq=brightness=-0.20:contrast=1.20:saturation=0.85,"
+                "vignette=PI/3.5[bg];"
+                "[1:v]scale=-1:1080[fg];"
+                "[bg][fg]overlay=x='(W-w)/2+sin(t*1.2)*14':y='H-h-120-(t*16)':eval=frame[with_fg];"
                 "[with_fg][2:v]overlay=0:0[outv]"
             )
             inputs = [
@@ -478,7 +486,7 @@ class DocuComposer:
             "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
             "boxblur=6,eq=brightness=-0.22:contrast=1.2,vignette=PI/3[bg];"
             "[1:v]scale=920:520[card];"
-            "[bg][card]overlay=(W-w)/2:(H-h)/2-80[with_card];"
+            "[bg][card]overlay=x='(W-w)/2':y='if(lt(t,0.20),(H-h)/2-80+(0.20-t)*1200,(H-h)/2-80)':eval=frame[with_card];"
             "[with_card][2:v]overlay=0:0[outv]"
         )
 
@@ -597,6 +605,49 @@ class DocuComposer:
         ]
         cls._run_ffmpeg(cmd)
 
+    # ── METAPHOR 7: CINEMATIC B-ROLL (FULL SCREEN 4K ATMOSPHERIC PUSH-IN) ──
+    @classmethod
+    def _render_cinematic_broll(
+        cls,
+        beat: Dict[str, Any],
+        duration: float,
+        theme: str,
+        output_clip: Path,
+        work_dir: Path,
+        beat_idx: int
+    ):
+        broll_kw = beat.get("broll_keywords") or beat.get("visual_subject") or "dark corporate skyscraper night"
+        context_broll = beat.get("contextual_broll_query", broll_kw)
+        bg_vid = DocuAssetService.fetch_broll_background(
+            keywords=broll_kw,
+            theme=theme,
+            beat_idx=beat_idx,
+            metaphor="cinematic_broll",
+            primary_subject=beat.get("primary_subject", ""),
+            contextual_broll=context_broll
+        )
+        stamp_png = DocuAssetService.generate_chapter_stamp(beat.get("chapter_stamp", ""))
+
+        filter_str = (
+            "[0:v]scale=1080*2:1920*2:force_original_aspect_ratio=increase,crop=1080*2:1920*2,"
+            "zoompan=z='min(zoom+0.0010,1.20)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=30,"
+            "eq=contrast=1.18:saturation=0.88,vignette=PI/3.5[broll];"
+            "[1:v]scale=1080:1920[stamp];"
+            "[broll][stamp]overlay=0:0[outv]"
+        )
+
+        cmd = [
+            "ffmpeg", "-y",
+            "-stream_loop", "-1", "-i", str(bg_vid),
+            "-loop", "1", "-t", f"{duration:.2f}", "-i", str(stamp_png),
+            "-filter_complex", filter_str,
+            "-map", "[outv]",
+            "-t", f"{duration:.2f}",
+            "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+            "-r", str(cls.FPS), str(output_clip)
+        ]
+        cls._run_ffmpeg(cmd)
+
     # ── TIMINGS & HORMOZI SUBTITLES ────────────────────────────────────────
     @classmethod
     def _calculate_beat_durations(cls, beats: List[Dict[str, Any]], total_audio_dur: float) -> List[float]:
@@ -646,8 +697,8 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Normal,{font_name},92,{norm_color},&H000000FF,&H00000000,&H80000000,1,0,0,0,100,100,2,0,1,7.0,3.0,2,60,60,220,1
-Style: Hot,{font_name},92,{hl_color},&H000000FF,&H00000000,&H80000000,1,0,0,0,100,100,2,0,1,7.0,3.0,2,60,60,220,1
+Style: Normal,{font_name},74,{norm_color},&H000000FF,&H00000000,&H80000000,1,0,0,0,100,100,1,0,1,4.5,2.0,2,60,60,260,1
+Style: Hot,{font_name},74,{hl_color},&H000000FF,&H00000000,&H80000000,1,0,0,0,100,100,1,0,1,4.5,2.0,2,60,60,260,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

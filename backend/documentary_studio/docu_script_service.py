@@ -69,6 +69,7 @@ class DocuScriptService:
                 {"id": "split_comparison", "name": "⚖️ Rivalry Split-Screen (VS)", "desc": "Two real titans side-by-side with names, logos and laser divider"},
                 {"id": "financial_stat", "name": "💰 Bloomberg Financial Card", "desc": "Giant bold valuation counter with trend pill & live ticker b-roll"},
                 {"id": "action_gif", "name": "⚡ Action GIF & Archival Loop", "desc": "Dynamic high-retention archival reaction or event loop"},
+                {"id": "cinematic_broll", "name": "🎥 4K Cinematic B-Roll Push-In", "desc": "Full-screen atmospheric 4K video shot with slow cinematic push-in & chapter stamp"},
             ]
         }
 
