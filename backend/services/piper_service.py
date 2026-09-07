@@ -4,7 +4,10 @@ Runs directly on CPU with ONNX Runtime. Zero API keys, zero internet latency.
 """
 import os
 import re
+import sys
 import wave
+import shutil
+import asyncio
 import urllib.request
 import subprocess
 from pathlib import Path
@@ -110,33 +113,74 @@ class PiperService:
         elif rate == "-5%":
             length_scale = 1.05
 
-        piper_exe = settings.BASE_DIR / "venv" / "Scripts" / "piper.exe"
+        # Cross-platform Piper execution (Linux, Windows, Cloud Shell)
+        piper_cmd = None
+        if shutil.which("piper"):
+            piper_cmd = [shutil.which("piper")]
+        elif (settings.BASE_DIR / "venv" / "bin" / "piper").exists():
+            piper_cmd = [str(settings.BASE_DIR / "venv" / "bin" / "piper")]
+        elif (settings.BASE_DIR / "venv" / "Scripts" / "piper.exe").exists():
+            piper_cmd = [str(settings.BASE_DIR / "venv" / "Scripts" / "piper.exe")]
+        else:
+            piper_cmd = [sys.executable, "-m", "piper"]
 
-        cmd = [
-            str(piper_exe),
+        cmd = piper_cmd + [
             "-m", str(onnx_file),
             "-c", str(json_file),
             "-f", str(raw_wav),
             "-i", str(input_txt),
             "--length-scale", str(length_scale)
         ]
-        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        res = None
+        try:
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except Exception as pe:
+            print(f"[Piper] Subprocess invocation note: {pe}")
 
         try:
             input_txt.unlink(missing_ok=True)
         except Exception:
             pass
 
+        # If Piper didn't produce output or failed, gracefully fallback to Edge-TTS
         if not raw_wav.exists() or raw_wav.stat().st_size < 100:
-            raise RuntimeError(f"Piper TTS synthesis failed: {res.stderr.decode('utf-8', errors='replace')}")
+            print(f"[Piper] Local Piper unavailable or failed. Falling back to Edge-TTS...")
+            try:
+                import edge_tts
+                if "bn" in raw_voice_name or bool(re.search(r"[\u0980-\u09FF]", text)):
+                    edge_voice = "bn-BD-PradeepNeural"
+                elif "hi" in raw_voice_name or bool(re.search(r"[\u0900-\u097F]", text)):
+                    edge_voice = "hi-IN-MadhurNeural"
+                else:
+                    edge_voice = "en-US-ChristopherNeural"
 
-        # Duration via wave
+                async def _synth_edge():
+                    comm = edge_tts.Communicate(clean_txt, edge_voice)
+                    await comm.save(str(raw_wav))
+
+                try:
+                    asyncio.run(_synth_edge())
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    loop.run_until_complete(_synth_edge())
+                    loop.close()
+            except Exception as edge_err:
+                err_msg = res.stderr.decode('utf-8', errors='replace') if (res and res.stderr) else str(edge_err)
+                raise RuntimeError(f"Voice generation failed: {err_msg}")
+
+        # Duration calculation (supports both WAV from Piper and MP3/WAV from Edge-TTS)
         dur = 3.0
         try:
             with wave.open(str(raw_wav), 'rb') as wf:
                 dur = wf.getnframes() / float(wf.getframerate())
-        except Exception as e:
-            print(f"[Piper] Duration calculation error: {e}")
+        except Exception:
+            try:
+                import soundfile as sf
+                with sf.SoundFile(str(raw_wav)) as f:
+                    dur = len(f) / float(f.samplerate)
+            except Exception:
+                dur = max(len(clean_txt.split()) * 0.42, 2.5)
 
         # Broadcast Studio Mastering via FFmpeg
         af = (
