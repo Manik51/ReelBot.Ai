@@ -2,11 +2,21 @@ import os
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-from google.oauth2.credentials import Credentials
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow, Flow
+try:
+    from googleapiclient.discovery import build
+    from googleapiclient.http import MediaFileUpload
+    from google.oauth2.credentials import Credentials
+    from google.auth.transport.requests import Request
+    from google_auth_oauthlib.flow import InstalledAppFlow, Flow
+    HAS_YOUTUBE_CLIENT = True
+except ImportError:
+    HAS_YOUTUBE_CLIENT = False
+    build = None
+    MediaFileUpload = None
+    Credentials = None
+    Request = None
+    InstalledAppFlow = None
+    Flow = None
 
 from backend.config import settings
 
@@ -40,7 +50,7 @@ class YouTubeService:
 
     @classmethod
     def get_auth_status(cls) -> Dict[str, Any]:
-        if not cls.TOKEN_FILE.exists():
+        if not HAS_YOUTUBE_CLIENT or not cls.TOKEN_FILE.exists():
             return {"authenticated": False, "channel_title": None}
         try:
             creds = Credentials.from_authorized_user_info(
