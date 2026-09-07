@@ -158,10 +158,12 @@ class DocuComposer:
 
             # Burn subtitles & finalize with unified 35mm film grain, moody contrast & vignette
             escaped_sub = str(sub_ass_path.resolve()).replace("\\", "/").replace(":", "\\:")
+            if "crime" in visual_theme.lower() or "noir" in visual_theme.lower():
+                master_grade = "eq=contrast=1.18:brightness=-0.04:saturation=0.82,noise=alls=10:allf=t+u,vignette=PI/3.5"
+            else:
+                master_grade = "eq=contrast=1.12:brightness=-0.03:saturation=0.90,noise=alls=10:allf=t+u,vignette=PI/3.6"
             filter_master = (
-                f"[0:v]eq=contrast=1.12:brightness=-0.03:saturation=0.90,"
-                f"noise=alls=10:allf=t+u,"
-                f"vignette=PI/3.6[graded];"
+                f"[0:v]{master_grade}[graded];"
                 f"[graded]subtitles='{escaped_sub}'[vfinal]"
             )
             cmd_master = [
@@ -204,11 +206,24 @@ class DocuComposer:
         beat_idx: int
     ):
         metaphor = beat.get("metaphor", "parallax_cutout")
+        is_crime_mode = ("crime" in theme.lower() or "noir" in theme.lower() or 
+                         any(m in metaphor for m in ["crime", "police", "dossier", "satellite"]))
 
-        if metaphor == "archival_photo_pan":
-            cls._render_archival_photo_pan(beat, duration, theme, output_clip, work_dir, beat_idx)
+        if metaphor == "crime_archival_drift":
+            cls._render_crime_archival_drift(beat, duration, theme, output_clip, work_dir, beat_idx)
+        elif metaphor == "police_dossier_slam":
+            cls._render_police_dossier_slam(beat, duration, theme, output_clip, work_dir, beat_idx)
+        elif metaphor == "satellite_map_zoom":
+            cls._render_satellite_map_zoom(beat, duration, theme, output_clip, work_dir, beat_idx)
+        elif metaphor == "cinematic_broll" or metaphor == "cinematic_crime_broll":
+            cls._render_cinematic_broll(beat, duration, theme, output_clip, work_dir, beat_idx)
         elif metaphor == "newspaper_slam":
             cls._render_newspaper_slam(beat, duration, theme, output_clip, work_dir, beat_idx)
+        elif is_crime_mode:
+            # ZERO CUTOUTS GUARANTEE: In True Crime mode, eliminate cutouts, cartoons, and split stickers
+            cls._render_crime_archival_drift(beat, duration, theme, output_clip, work_dir, beat_idx)
+        elif metaphor == "archival_photo_pan":
+            cls._render_archival_photo_pan(beat, duration, theme, output_clip, work_dir, beat_idx)
         elif metaphor == "financial_stat":
             cls._render_financial_stat(beat, duration, theme, output_clip, work_dir, beat_idx)
         elif metaphor == "split_comparison":
@@ -217,10 +232,171 @@ class DocuComposer:
             cls._render_action_gif(beat, duration, theme, output_clip, work_dir, beat_idx)
         elif metaphor == "orbit_network":
             cls._render_orbit_network(beat, duration, theme, output_clip, work_dir, beat_idx)
-        elif metaphor == "cinematic_broll":
-            cls._render_cinematic_broll(beat, duration, theme, output_clip, work_dir, beat_idx)
         else:
             cls._render_parallax_cutout(beat, duration, theme, output_clip, work_dir, beat_idx)
+
+    # ── METAPHOR: CRIME ARCHIVAL DRIFT (REAL EVIDENCE & MUGSHOT DRIFT) ─────
+    @classmethod
+    def _render_crime_archival_drift(
+        cls,
+        beat: Dict[str, Any],
+        duration: float,
+        theme: str,
+        output_clip: Path,
+        work_dir: Path,
+        beat_idx: int
+    ):
+        asset_info = DocuAssetService.resolve_crime_asset(beat, theme, beat_idx)
+        asset_type = asset_info.get("type", "image")
+        asset_path = asset_info.get("path")
+        
+        hud_png = DocuAssetService.generate_crime_timestamp_overlay(
+            chapter_stamp=beat.get("chapter_stamp", ""),
+            location_subtext=beat.get("visual_subject") or beat.get("primary_subject", "")
+        )
+
+        if asset_type == "image":
+            filter_str = (
+                "[0:v]scale=1080*2:1920*2:force_original_aspect_ratio=increase,"
+                "crop=1080*2:1920*2,"
+                "zoompan=z='min(zoom+0.0013,1.26)':x='iw/2-(iw/zoom/2)+sin(on/50)*22':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=30,"
+                "eq=brightness=-0.04:contrast=1.18:saturation=0.82,"
+                "noise=alls=10:allf=t+u,"
+                "vignette=PI/3.5[pan];"
+                "[1:v]scale=1080:1920[hud];"
+                "[pan][hud]overlay=0:0[outv]"
+            )
+            cmd = [
+                "ffmpeg", "-y",
+                "-loop", "1", "-t", f"{duration:.2f}", "-i", str(asset_path),
+                "-loop", "1", "-t", f"{duration:.2f}", "-i", str(hud_png),
+                "-filter_complex", filter_str,
+                "-map", "[outv]",
+                "-t", f"{duration:.2f}",
+                "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+                "-r", str(cls.FPS),
+                str(output_clip)
+            ]
+        else:
+            filter_str = (
+                "[0:v]scale=1080*2:1920*2:force_original_aspect_ratio=increase,crop=1080*2:1920*2,"
+                "zoompan=z='min(zoom+0.0010,1.20)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=30,"
+                "eq=brightness=-0.04:contrast=1.20:saturation=0.84,"
+                "noise=alls=8:allf=t+u,"
+                "vignette=PI/3.5[vid];"
+                "[1:v]scale=1080:1920[hud];"
+                "[vid][hud]overlay=0:0[outv]"
+            )
+            cmd = [
+                "ffmpeg", "-y",
+                "-stream_loop", "-1", "-i", str(asset_path),
+                "-loop", "1", "-t", f"{duration:.2f}", "-i", str(hud_png),
+                "-filter_complex", filter_str,
+                "-map", "[outv]",
+                "-t", f"{duration:.2f}",
+                "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+                "-r", str(cls.FPS),
+                str(output_clip)
+            ]
+        cls._run_ffmpeg(cmd)
+
+    # ── METAPHOR: POLICE DOSSIER SLAM (CONFIDENTIAL CASE RECORD) ────────────
+    @classmethod
+    def _render_police_dossier_slam(
+        cls,
+        beat: Dict[str, Any],
+        duration: float,
+        theme: str,
+        output_clip: Path,
+        work_dir: Path,
+        beat_idx: int
+    ):
+        broll_kw = beat.get("broll_keywords") or "dark police station desk interrogation files"
+        bg_vid = DocuAssetService.fetch_broll_background(
+            keywords=broll_kw,
+            theme=theme,
+            beat_idx=beat_idx,
+            metaphor="police_dossier_slam",
+            contextual_broll=beat.get("contextual_broll_query", "police interrogation desk lamp paperwork")
+        )
+        dossier_card = DocuAssetService.generate_police_dossier_card(
+            case_title=beat.get("headline_text") or beat.get("visual_subject") or "CRIME CASE RECORD",
+            subject_name=beat.get("primary_subject") or "CONFIDENTIAL SUSPECT",
+            case_no=beat.get("delta_str") or "FIR-2018/SEC-302",
+            police_station=beat.get("publication_name") or "DELHI POLICE · CRIME BRANCH",
+            theme=theme
+        )
+        hud_png = DocuAssetService.generate_crime_timestamp_overlay(
+            chapter_stamp=beat.get("chapter_stamp", ""),
+            location_subtext="CLASSIFIED CASE DOSSIER // CONFIDENTIAL"
+        )
+
+        filter_str = (
+            "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+            "boxblur=7,eq=brightness=-0.22:contrast=1.22:saturation=0.75,vignette=PI/3.2[bg];"
+            "[1:v]scale=920:-1[card];"
+            f"[bg][card]overlay=x='(W-w)/2':y='if(lt(t,0.16),(H-h)/2-60-(0.16-t)*2600,(H-h)/2-60)':eval=frame[slam];"
+            "[slam][2:v]overlay=0:0[outv]"
+        )
+
+        cmd = [
+            "ffmpeg", "-y",
+            "-stream_loop", "-1", "-i", str(bg_vid),
+            "-loop", "1", "-t", f"{duration:.2f}", "-i", str(dossier_card),
+            "-loop", "1", "-t", f"{duration:.2f}", "-i", str(hud_png),
+            "-filter_complex", filter_str,
+            "-map", "[outv]",
+            "-t", f"{duration:.2f}",
+            "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+            "-r", str(cls.FPS),
+            str(output_clip)
+        ]
+        cls._run_ffmpeg(cmd)
+
+    # ── METAPHOR: SATELLITE MAP ZOOM (INDIAN CRIME LOCATION RETICLE) ───────
+    @classmethod
+    def _render_satellite_map_zoom(
+        cls,
+        beat: Dict[str, Any],
+        duration: float,
+        theme: str,
+        output_clip: Path,
+        work_dir: Path,
+        beat_idx: int
+    ):
+        loc_name = beat.get("visual_subject") or beat.get("chapter_stamp", "DELHI, INDIA")
+        clean_loc = re.sub(r"[\[\]·\d:]", "", loc_name).strip() or "New Delhi India"
+        query = f"{clean_loc} aerial satellite view map"
+
+        photo_path = DocuAssetService.fetch_archival_photo(query)
+        reticle_png = DocuAssetService.generate_satellite_reticle(
+            coordinates_str="28.7532° N, 77.1983° E",
+            location_name=loc_name[:30]
+        )
+
+        filter_str = (
+            "[0:v]scale=1080*2:1920*2:force_original_aspect_ratio=increase,"
+            "crop=1080*2:1920*2,"
+            "zoompan=z='min(zoom+0.0020,1.38)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=30,"
+            "eq=brightness=-0.08:contrast=1.22:saturation=0.65,"
+            "noise=alls=12:allf=t+u,"
+            "vignette=PI/3.2[sat];"
+            "[1:v]scale=1080:1920[reticle];"
+            "[sat][reticle]overlay=0:0[outv]"
+        )
+
+        cmd = [
+            "ffmpeg", "-y",
+            "-loop", "1", "-t", f"{duration:.2f}", "-i", str(photo_path),
+            "-loop", "1", "-t", f"{duration:.2f}", "-i", str(reticle_png),
+            "-filter_complex", filter_str,
+            "-map", "[outv]",
+            "-t", f"{duration:.2f}",
+            "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+            "-r", str(cls.FPS),
+            str(output_clip)
+        ]
+        cls._run_ffmpeg(cmd)
 
     # ── METAPHOR: ARCHIVAL PHOTO PAN (KEN BURNS HISTORICAL PHOTOGRAPH) ─────
     @classmethod

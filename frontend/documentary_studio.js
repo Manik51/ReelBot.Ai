@@ -10,7 +10,7 @@
     currentScript: null,
     currentTaskId: null,
     pollInterval: null,
-    selectedCategory: 'corporate_rise_fall',
+    selectedCategory: 'indian_true_crime',
     selectedDuration: 60,
     presetsData: null,
     lastLogCount: 0
@@ -48,8 +48,8 @@
       <button type="button" id="mode-motion-btn" class="mode-tab-btn mode-motion" title="Viral Looping GIF Engine">
         <span>⚡</span> Motion Studio
       </button>
-      <button type="button" id="mode-docu-btn" class="mode-tab-btn mode-docu active" title="60s Documentary & Business Analysis Engine">
-        <span>📊</span> Documentary Studio
+      <button type="button" id="mode-docu-btn" class="mode-tab-btn mode-docu active" title="Indian True Crime & Documentary Engine">
+        <span>🚨</span> True Crime Studio
       </button>
     `;
 
@@ -97,6 +97,22 @@
   function populateDropdowns() {
     const data = docuState.presetsData;
     if (!data) return;
+
+    // Categories
+    const catSelect = document.getElementById('docu-category-select');
+    if (catSelect && data.categories) {
+      catSelect.innerHTML = Object.entries(data.categories).map(([k, cat]) =>
+        `<option value="${k}" ${k === docuState.selectedCategory ? 'selected' : ''}>${cat.name}</option>`
+      ).join('');
+    }
+
+    // Themes
+    const themeSelect = document.getElementById('docu-theme-select');
+    if (themeSelect && data.themes) {
+      themeSelect.innerHTML = data.themes.map(t =>
+        `<option value="${t.id}" ${t.id === 'crime_noir' ? 'selected' : ''}>${t.name}</option>`
+      ).join('');
+    }
 
     // Voices
     const voiceSelect = document.getElementById('docu-voice-select');

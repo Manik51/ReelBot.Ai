@@ -30,7 +30,7 @@ class DocumentaryRenderRequest(BaseModel):
     voice_speed: str = "+0%"
     subtitle_color: str = "yellow"
     font_name: str = "Space Grotesk"
-    visual_theme: str = "dark_slate"
+    visual_theme: str = "crime_noir"
     bgm_id: Optional[str] = "dark_investigative"
     bgm_volume: float = 0.15
     sfx_volume: float = 0.60
@@ -62,7 +62,7 @@ def get_presets():
         {"id": "Arial Black", "name": "Arial Black (High Punch)"}
     ]
     presets["bgm_options"] = [
-        {"id": "dark_investigative", "name": "🕵️‍♂️ Dark Investigative Mystery (Sub Bass & Tick)"},
+        {"id": "dark_investigative", "name": "🚨 True Crime Noir & Investigation (Dark Ambient Drone)"},
         {"id": "corporate_power", "name": "💼 Corporate Power & Ambition (Cinematic Pulse)"},
         {"id": "financial_doom", "name": "📉 Financial Doom & Tension (Low Strings)"},
         {"id": "none", "name": "🔇 Mute Background Music (Voice + SFX Only)"}

@@ -28,6 +28,11 @@ class DocuSfxService:
             "bass_drop.wav": cls._synth_bass_drop,
             "whoosh_cinematic.wav": cls._synth_whoosh,
             "typewriter_hit.wav": cls._synth_typewriter,
+            "police_siren.wav": cls._synth_police_siren,
+            "gavel_strike.wav": cls._synth_gavel_strike,
+            "radio_static.wav": cls._synth_radio_static,
+            "dull_heartbeat.wav": cls._synth_dull_heartbeat,
+            "camera_flash.wav": cls._synth_camera_flash,
         }
 
         for filename, synth_func in generators.items():
@@ -55,6 +60,19 @@ class DocuSfxService:
             "impact": "bass_drop.wav",
             "whoosh": "whoosh_cinematic.wav",
             "typewriter": "typewriter_hit.wav",
+            "police_siren": "police_siren.wav",
+            "siren": "police_siren.wav",
+            "gavel": "gavel_strike.wav",
+            "gavel_strike": "gavel_strike.wav",
+            "court": "gavel_strike.wav",
+            "radio_static": "radio_static.wav",
+            "static": "radio_static.wav",
+            "dispatch": "radio_static.wav",
+            "dull_heartbeat": "dull_heartbeat.wav",
+            "heartbeat": "dull_heartbeat.wav",
+            "pulse": "dull_heartbeat.wav",
+            "camera_flash": "camera_flash.wav",
+            "flash": "camera_flash.wav",
         }
         fname = cue_map.get(cue_name.lower())
         if fname:
@@ -149,6 +167,80 @@ class DocuSfxService:
         noise = np.random.uniform(-1, 1, len(t)) * np.exp(-60 * t)
         ring = np.sin(2 * np.pi * 2100 * t) * np.exp(-35 * t)
         samples = 0.7 * noise + 0.3 * ring
+        cls._write_wav(path, samples, sr)
+
+    @classmethod
+    def _synth_police_siren(cls, path: Path):
+        """Synthesizes a realistic two-tone police / emergency siren whoop."""
+        sr = 44100
+        dur = 1.0
+        t = np.linspace(0, dur, int(sr * dur), False)
+        # Siren pitch oscillates smoothly between 620Hz and 980Hz
+        freq = 800 + 180 * np.sin(2 * np.pi * 2.5 * t)
+        phase = 2 * np.pi * np.cumsum(freq) / sr
+        siren = np.sin(phase) * (1.0 - 0.2 * np.exp(-3 * t))
+        # Add slight odd harmonic for European / Indian police horn texture
+        horn = 0.25 * np.sin(3 * phase)
+        # Soft envelope fade-in and fade-out
+        env = np.clip(t / 0.05, 0, 1) * np.clip((dur - t) / 0.15, 0, 1)
+        samples = (siren + horn) * env * 0.75
+        cls._write_wav(path, samples, sr)
+
+    @classmethod
+    def _synth_gavel_strike(cls, path: Path):
+        """Synthesizes an authoritative courtroom wooden gavel strike with body resonance."""
+        sr = 44100
+        dur = 0.65
+        t = np.linspace(0, dur, int(sr * dur), False)
+        # Initial sharp wood slap noise
+        slap = np.random.uniform(-1, 1, len(t)) * np.exp(-120 * t)
+        # Deep oak block resonance (180Hz and 340Hz)
+        body1 = np.sin(2 * np.pi * 180 * t) * np.exp(-14 * t)
+        body2 = np.sin(2 * np.pi * 340 * t) * np.exp(-22 * t)
+        samples = (0.5 * slap + 0.6 * body1 + 0.3 * body2)
+        cls._write_wav(path, samples, sr)
+
+    @classmethod
+    def _synth_radio_static(cls, path: Path):
+        """Synthesizes a police dispatch radio squelch static burst with brief walkie-talkie chirp."""
+        sr = 44100
+        dur = 0.45
+        t = np.linspace(0, dur, int(sr * dur), False)
+        # Chirp beep at start (880Hz / 1200Hz)
+        chirp = np.sin(2 * np.pi * 1050 * t) * np.exp(-90 * t)
+        # Filtered high-frequency static noise
+        noise = np.random.uniform(-1, 1, len(t)) * np.exp(-8 * t)
+        # Modulation
+        mod = 0.5 * (1.0 + np.sin(2 * np.pi * 45 * t))
+        env = np.clip((dur - t) / 0.1, 0, 1)
+        samples = (0.35 * chirp + 0.65 * noise * mod) * env * 0.7
+        cls._write_wav(path, samples, sr)
+
+    @classmethod
+    def _synth_dull_heartbeat(cls, path: Path):
+        """Synthesizes a low, mounting suspense heartbeat (lub-dub)."""
+        sr = 44100
+        dur = 0.8
+        t = np.linspace(0, dur, int(sr * dur), False)
+        # Lub (first thump at t=0)
+        lub = np.sin(2 * np.pi * 52 * t) * np.exp(-22 * t)
+        # Dub (second thump at t=0.22)
+        t_dub = np.maximum(0, t - 0.22)
+        dub = np.sin(2 * np.pi * 46 * t_dub) * np.exp(-18 * t_dub) * (t >= 0.22)
+        samples = (0.8 * lub + 0.85 * dub)
+        cls._write_wav(path, samples, sr)
+
+    @classmethod
+    def _synth_camera_flash(cls, path: Path):
+        """Synthesizes a forensic press/crime scene camera flash strobe and capacitor snap."""
+        sr = 44100
+        dur = 0.5
+        t = np.linspace(0, dur, int(sr * dur), False)
+        # Capacitor snap
+        snap = np.random.uniform(-1, 1, len(t)) * np.exp(-140 * t)
+        # Strobe ping ring
+        strobe = np.sin(2 * np.pi * 3200 * t) * np.exp(-35 * t)
+        samples = 0.7 * snap + 0.3 * strobe
         cls._write_wav(path, samples, sr)
 
     # ── FFmpeg MULTI-TRACK AUDIO MIXER ─────────────────────────────────────

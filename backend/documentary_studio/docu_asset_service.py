@@ -1067,3 +1067,267 @@ class DocuAssetService:
         out_path.parent.mkdir(parents=True, exist_ok=True)
         img.save(str(out_path), "PNG")
         return out_path
+
+    # ── 8. TRUE CRIME DOSSIER & TWO-TIER ASSET ENGINE ───────────────────────
+    @classmethod
+    def resolve_crime_asset(
+        cls,
+        beat: Dict[str, Any],
+        theme: str = "crime_noir",
+        beat_idx: int = 0
+    ) -> Dict[str, Any]:
+        """
+        Two-Tier Indian True Crime Asset Resolver:
+        Tier 1: High-relevance real archival photograph, police FIR, or crime scene picture.
+        Tier 2: Atmospheric cinematic B-roll (police sirens, flashing lights, handcuffs, rain, courtroom gavel).
+        Returns dict: {"type": "image" | "video", "path": Path}
+        """
+        cls.initialize()
+        primary_q = beat.get("primary_real_query") or beat.get("visual_subject") or beat.get("primary_subject") or ""
+        fallback_q = beat.get("fallback_stock_query") or beat.get("broll_keywords") or beat.get("contextual_broll_query") or "dark night police car emergency flashing lights"
+
+        # Tier 1: Try real archival photo
+        if primary_q and primary_q.strip():
+            try:
+                photo_path = cls.fetch_archival_photo(primary_q)
+                if photo_path and photo_path.exists() and photo_path.stat().st_size > 5000:
+                    print(f"[DocuAsset] Tier 1 Real Archival Asset Found: {primary_q}")
+                    return {"type": "image", "path": photo_path}
+            except Exception as e:
+                print(f"[DocuAsset] Tier 1 lookup failed for '{primary_q}': {e}")
+
+        # Tier 2: Try atmospheric cinematic B-roll
+        try:
+            video_path = cls.fetch_broll_background(
+                keywords=fallback_q,
+                theme=theme,
+                beat_idx=beat_idx,
+                metaphor="cinematic_broll",
+                contextual_broll=fallback_q
+            )
+            if video_path and video_path.exists():
+                print(f"[DocuAsset] Tier 2 Stock B-Roll Asset Found: {fallback_q}")
+                return {"type": "video", "path": video_path}
+        except Exception as e:
+            print(f"[DocuAsset] Tier 2 lookup failed for '{fallback_q}': {e}")
+
+        # Fallback to atmospheric background
+        h_hash = hashlib.md5(f"crime_atm_{beat_idx}".encode()).hexdigest()[:8]
+        out_fallback = cls.CACHE_DIR / f"crime_bg_{h_hash}.mp4"
+        return {"type": "video", "path": cls._generate_atmospheric_background(theme, beat_idx, out_fallback)}
+
+    @classmethod
+    def generate_police_dossier_card(
+        cls,
+        case_title: str,
+        subject_name: str,
+        case_no: str = "",
+        police_station: str = "",
+        theme: str = "crime_noir"
+    ) -> Path:
+        """
+        Generates an authentic police investigation file / CBI confidential dossier card.
+        Includes official header, red stamped seal, case number, suspect identity,
+        and black redacted intelligence lines.
+        """
+        cls.initialize()
+        c_hash = hashlib.md5(f"{case_title}_{subject_name}_{case_no}".encode()).hexdigest()[:10]
+        out_path = cls.CACHE_DIR / f"dossier_{c_hash}.png"
+        if out_path.exists():
+            return out_path
+
+        w, h = 960, 1120
+        # Aged manila folder or dark noir case file
+        paper_bg = (24, 22, 20, 250) if "noir" in theme or "dark" in theme else (235, 225, 205, 255)
+        text_primary = (245, 245, 245) if "noir" in theme or "dark" in theme else (25, 25, 25)
+        text_muted = (180, 175, 165) if "noir" in theme or "dark" in theme else (85, 80, 75)
+        rule_color = (60, 55, 50) if "noir" in theme or "dark" in theme else (180, 170, 150)
+
+        img = Image.new("RGBA", (w, h), paper_bg)
+        draw = ImageDraw.Draw(img)
+
+        # Folder tab at top-left
+        tab_w, tab_h = 320, 45
+        draw.rounded_rectangle((30, 15, 30 + tab_w, 15 + tab_h + 20), radius=10, fill=rule_color)
+        try:
+            f_tab = ImageFont.truetype("arialbd.ttf", 20)
+            f_title = ImageFont.truetype("arialbd.ttf", 36)
+            f_header = ImageFont.truetype("arialbd.ttf", 26)
+            f_label = ImageFont.truetype("arialbd.ttf", 22)
+            f_value = ImageFont.truetype("arial.ttf", 24)
+            f_stamp = ImageFont.truetype("arialbd.ttf", 44)
+        except Exception:
+            f_tab = ImageFont.load_default()
+            f_title = f_tab
+            f_header = f_tab
+            f_label = f_tab
+            f_value = f_tab
+            f_stamp = f_tab
+
+        draw.text((45, 24), "CASE RECORD // EVIDENCE", fill=(255, 255, 255), font=f_tab)
+
+        # Folder outer border with vintage double line
+        draw.rectangle((30, 50, w - 30, h - 35), outline=rule_color, width=3)
+        draw.rectangle((36, 56, w - 36, h - 41), outline=rule_color, width=1)
+
+        # Official Police / Investigation Agency Banner
+        draw.rectangle((55, 75, w - 55, 140), fill=(18, 16, 14, 255) if "noir" in theme else (50, 45, 40, 255))
+        station_text = (police_station or "CRIME BRANCH · SPECIAL INVESTIGATION TEAM").upper()
+        draw.text((w // 2, 107), station_text, fill=(245, 158, 11), font=f_header, anchor="mm")
+
+        # Case Title
+        clean_title = (case_title or "CONFIDENTIAL INVESTIGATION").upper()
+        draw.text((65, 170), "CASE FILE:", fill=text_muted, font=f_label)
+        draw.text((65, 205), clean_title[:45], fill=text_primary, font=f_title)
+        draw.line((65, 260, w - 65, 260), fill=rule_color, width=2)
+
+        # Key Metadata Grid
+        fir_text = (case_no or "FIR-2018 / SEC-302-IPC").upper()
+        subj_text = (subject_name or "PRIMARY ACCUSED / WITNESS").upper()
+        
+        y_cursor = 285
+        draw.text((65, y_cursor), "REGISTRATION NO:", fill=text_muted, font=f_label)
+        draw.text((290, y_cursor), fir_text, fill=(239, 68, 68), font=f_value)
+        y_cursor += 50
+
+        draw.text((65, y_cursor), "SUBJECT / PERSON OF INT:", fill=text_muted, font=f_label)
+        draw.text((370, y_cursor), subj_text[:30], fill=text_primary, font=f_value)
+        y_cursor += 50
+
+        draw.text((65, y_cursor), "INVESTIGATION STATUS:", fill=text_muted, font=f_label)
+        draw.text((350, y_cursor), "CHARGESHEET FILED / ACTIVE", fill=(245, 158, 11), font=f_value)
+        y_cursor += 65
+
+        draw.line((65, y_cursor, w - 65, y_cursor), fill=rule_color, width=2)
+        y_cursor += 30
+
+        # Redacted Statement Section (Adds intense documentary authenticity)
+        draw.text((65, y_cursor), "CLASSIFIED WITNESS DEPOSITION / EVIDENCE LOG:", fill=text_muted, font=f_label)
+        y_cursor += 45
+
+        line_lengths = [w - 150, w - 210, w - 170, w - 260]
+        for ll in line_lengths:
+            draw.rectangle((65, y_cursor, 65 + ll, y_cursor + 24), fill=(10, 10, 10, 255))
+            y_cursor += 38
+
+        # Red Stamped "CONFIDENTIAL / SEALED" Box
+        stamp_w, stamp_h = 420, 90
+        stamp_x = w - stamp_w - 75
+        stamp_y = h - stamp_h - 65
+        draw.rectangle((stamp_x, stamp_y, stamp_x + stamp_w, stamp_y + stamp_h), outline=(220, 38, 38), width=5)
+        draw.rectangle((stamp_x + 5, stamp_y + 5, stamp_x + stamp_w - 5, stamp_y + stamp_h - 5), outline=(220, 38, 38), width=2)
+        draw.text((stamp_x + stamp_w // 2, stamp_y + stamp_h // 2), "TOP SECRET // CBI", fill=(220, 38, 38), font=f_stamp, anchor="mm")
+
+        # Soft realistic Gaussian drop shadow
+        card_with_shadow = cls._add_drop_shadow(img, offset=(18, 22), blur_radius=22, shadow_opacity=0.65)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        card_with_shadow.save(str(out_path), "PNG")
+        return out_path
+
+    @classmethod
+    def generate_crime_timestamp_overlay(
+        cls,
+        chapter_stamp: str = "",
+        location_subtext: str = ""
+    ) -> Path:
+        """
+        Renders a subtle 1080x1920 Police Bodycam / Crime Evidence HUD overlay.
+        Includes REC blinking dot, timestamp, location, and corner reticles.
+        """
+        cls.initialize()
+        clean_stamp = (chapter_stamp or "[ 01 JULY 2018 · SCENE OF OCCURRENCE ]").strip()
+        o_hash = hashlib.md5(f"{clean_stamp}_{location_subtext}".encode()).hexdigest()[:10]
+        out_path = cls.CACHE_DIR / f"crime_hud_{o_hash}.png"
+        if out_path.exists():
+            return out_path
+
+        w, h = 1080, 1920
+        img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+
+        try:
+            f_hud = ImageFont.truetype("arialbd.ttf", 26)
+            f_sub = ImageFont.truetype("arial.ttf", 20)
+        except Exception:
+            f_hud = ImageFont.load_default()
+            f_sub = f_hud
+
+        # Top Bar: REC Indicator (left) + Evidence Chapter Stamp (center/right)
+        draw.ellipse((60, 120, 84, 144), fill=(239, 68, 68, 240))
+        draw.text((96, 120), "REC  24 FPS", fill=(255, 255, 255, 220), font=f_hud)
+
+        bbox = draw.textbbox((0, 0), clean_stamp, font=f_hud)
+        pw = bbox[2] - bbox[0] + 40
+        ph = 52
+        px = w - pw - 60
+        py = 110
+        draw.rounded_rectangle((px, py, px + pw, py + ph), radius=10, fill=(15, 15, 20, 210), outline=(220, 38, 38, 160), width=2)
+        draw.text((px + pw // 2, py + ph // 2), clean_stamp, fill=(255, 255, 255, 240), font=f_hud, anchor="mm")
+
+        # Bottom Bar: Police Evidence Tag
+        draw.line((60, h - 130, w - 60, h - 130), fill=(255, 255, 255, 60), width=1)
+        sub_text = location_subtext.upper() if location_subtext else "POLICE EVIDENCE ARCHIVE // NOT FOR BROADCAST"
+        draw.text((60, h - 110), sub_text, fill=(200, 200, 200, 160), font=f_sub)
+        draw.text((w - 60, h - 110), "RESTRICTED", fill=(239, 68, 68, 200), font=f_sub, anchor="rt")
+
+        # Subtle viewfinder corner crosshairs
+        corner_len = 35
+        # Top-Left
+        draw.line((50, 90, 50 + corner_len, 90), fill=(255, 255, 255, 120), width=2)
+        draw.line((50, 90, 50, 90 + corner_len), fill=(255, 255, 255, 120), width=2)
+        # Top-Right
+        draw.line((w - 50, 90, w - 50 - corner_len, 90), fill=(255, 255, 255, 120), width=2)
+        draw.line((w - 50, 90, w - 50, 90 + corner_len), fill=(255, 255, 255, 120), width=2)
+        # Bottom-Left
+        draw.line((50, h - 80, 50 + corner_len, h - 80), fill=(255, 255, 255, 120), width=2)
+        draw.line((50, h - 80, 50, h - 80 - corner_len), fill=(255, 255, 255, 120), width=2)
+        # Bottom-Right
+        draw.line((w - 50, h - 80, w - 50 - corner_len, h - 80), fill=(255, 255, 255, 120), width=2)
+        draw.line((w - 50, h - 80, w - 50, h - 80 - corner_len), fill=(255, 255, 255, 120), width=2)
+
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        img.save(str(out_path), "PNG")
+        return out_path
+
+    @classmethod
+    def generate_satellite_reticle(cls, coordinates_str: str = "28.7532° N, 77.1983° E", location_name: str = "SANT NAGAR, DELHI") -> Path:
+        """
+        Renders a satellite surveillance target reticle overlay (1080x1920).
+        """
+        cls.initialize()
+        s_hash = hashlib.md5(f"{coordinates_str}_{location_name}".encode()).hexdigest()[:10]
+        out_path = cls.CACHE_DIR / f"sat_reticle_{s_hash}.png"
+        if out_path.exists():
+            return out_path
+
+        w, h = 1080, 1920
+        img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+
+        cx, cy = w // 2, h // 2 - 60
+
+        try:
+            f_mono = ImageFont.truetype("arialbd.ttf", 26)
+            f_sm = ImageFont.truetype("arial.ttf", 20)
+        except Exception:
+            f_mono = ImageFont.load_default()
+            f_sm = f_mono
+
+        # Target circles
+        draw.ellipse((cx - 180, cy - 180, cx + 180, cy + 180), outline=(239, 68, 68, 180), width=2)
+        draw.ellipse((cx - 100, cy - 100, cx + 100, cy + 100), outline=(245, 158, 11, 140), width=1)
+        draw.line((cx - 220, cy, cx + 220, cy), fill=(239, 68, 68, 160), width=1)
+        draw.line((cx, cy - 220, cx, cy + 220), fill=(239, 68, 68, 160), width=1)
+
+        # Coordinate box
+        coord_text = f"TARGET COORDINATES: {coordinates_str}"
+        draw.rectangle((cx - 240, cy + 210, cx + 240, cy + 265), fill=(10, 10, 15, 230), outline=(239, 68, 68, 200), width=2)
+        draw.text((cx, cy + 237), coord_text, fill=(255, 255, 255), font=f_sm, anchor="mm")
+
+        # Location name badge
+        loc_text = location_name.upper()
+        draw.text((cx, cy - 210), f"SATELLITE INTEL // {loc_text}", fill=(245, 158, 11), font=f_mono, anchor="mm")
+
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        img.save(str(out_path), "PNG")
+        return out_path
