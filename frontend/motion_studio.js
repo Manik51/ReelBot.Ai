@@ -465,7 +465,7 @@
     }
 
     if (seoDesc && motionState.currentScript) {
-      const d = (motionState.currentScript.seo && motionState.currentScript.seo.youtube_description) || `${motionState.currentScript.title} #shorts #funny #reelbot.ai`;
+      const d = (motionState.currentScript.seo && motionState.currentScript.seo.youtube_description) || `${motionState.currentScript.title} #shorts #funny #skullbot.ai`;
       seoDesc.value = d;
     }
 

@@ -599,7 +599,7 @@ window.rerollHook = function(btn) {
 async function handleGenerateVideo() {
   if (!appState.currentScript) return;
 
-  terminalLogs.innerHTML = '<div class="log-line text-cyan">[00:00.00] ⚡ ReelBot.Ai Engine initialized. Spawning worker thread...</div>';
+  terminalLogs.innerHTML = '<div class="log-line text-cyan">[00:00.00] 💀 SkullBot.Ai Engine initialized. Spawning worker thread...</div>';
   appState.lastLogIndex = 0;
   resumeTaskBtn.classList.add('hidden');
 
@@ -791,7 +791,7 @@ async function handleDirectYouTubeUpload() {
     || (script && script.seo && script.seo.youtube_description)
     || `${autoTitle}\n\n#shorts #mystery #viral #truecrime`;
 
-  // Merge script hashtags + user-added tags + mandatory #reelbot.ai
+  // Merge script hashtags + user-added tags + mandatory #skullbot.ai
   const scriptHashtags = (script && script.seo && script.seo.hashtags) || [];
   const scriptTags     = (script && script.seo && script.seo.tags) || [];
   const userRawTags    = seoTagsInput && seoTagsInput.value.trim()
@@ -802,7 +802,7 @@ async function handleDirectYouTubeUpload() {
     ...scriptHashtags,
     ...scriptTags,
     ...userRawTags,
-    '#reelbot.ai',   // ALWAYS present
+    '#skullbot.ai',   // ALWAYS present
     '#shorts',
     '#viral',
     '#mystery',
@@ -878,7 +878,7 @@ async function handleDirectYouTubeUpload() {
       📺 <a href="${data.watch_url}" target="_blank" style="color:#00E5FF; font-weight:700; text-decoration:underline;">
         ▶ এখনই লাইভ দেখুন: ${data.watch_url}
       </a><br>
-      🏷️ <strong>#reelbot.ai</strong> সহ ${data.tags ? data.tags.length : ''} টি ট্যাগ যুক্ত করে শর্টস আপলোড হয়েছে!
+      🏷️ <strong>#skullbot.ai</strong> সহ ${data.tags ? data.tags.length : ''} টি ট্যাগ যুক্ত করে শর্টস আপলোড হয়েছে!
     `;
   } catch (err) {
     ytUploadStatus.className = 'yt-upload-status-msg error';

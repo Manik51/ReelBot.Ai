@@ -54,12 +54,20 @@ class VideoComposer:
                 f.write(f"file '{clean_path}'\n")
 
         clean_ass = str(ass_subtitles.resolve()).replace("\\", "/").replace(":", "\\:")
-        video_filter = f"subtitles='{clean_ass}'"
+        
+        # Dynamic roaming SkullBot.Ai watermark
+        from backend.services.watermark_service import WatermarkService
+        watermark_img = WatermarkService.get_watermark_image()
 
         if bgm_audio and bgm_audio.exists():
             # Smart music trimming starting at 5s (where beat drops) with smooth fade-in and 1.5s fade-out
             fade_start = max((total_duration or 60.0) - 1.5, 1.0)
             bgm_filter = f"[2:a]atrim=start=5,asetpts=PTS-STARTPTS,volume={bgm_volume},afade=t=in:st=0:d=0.5,afade=t=out:st={fade_start:.2f}:d=1.5[bgm]"
+            watermark_filter = WatermarkService.get_floating_overlay_filter(
+                video_in_label="[0:v]",
+                watermark_in_idx=3,
+                out_label="[vwater]"
+            )
             
             cmd = [
                 "ffmpeg", "-y",
@@ -67,8 +75,9 @@ class VideoComposer:
                 "-f", "concat", "-safe", "0", "-i", str(concat_file),
                 "-i", str(voiceover_audio),
                 "-stream_loop", "-1", "-i", str(bgm_audio),
+                "-loop", "1", "-i", str(watermark_img),
                 "-filter_complex",
-                f"[0:v]{video_filter}[v];{bgm_filter};[1:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[a]",
+                f"{watermark_filter};[vwater]subtitles='{clean_ass}'[v];{bgm_filter};[1:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[a]",
                 "-map", "[v]",
                 "-map", "[a]",
                 "-c:v", "libx264",
@@ -81,13 +90,20 @@ class VideoComposer:
                 str(output_video)
             ]
         else:
+            watermark_filter = WatermarkService.get_floating_overlay_filter(
+                video_in_label="[0:v]",
+                watermark_in_idx=2,
+                out_label="[vwater]"
+            )
             cmd = [
                 "ffmpeg", "-y",
                 "-threads", "0",
                 "-f", "concat", "-safe", "0", "-i", str(concat_file),
                 "-i", str(voiceover_audio),
-                "-vf", video_filter,
-                "-map", "0:v",
+                "-loop", "1", "-i", str(watermark_img),
+                "-filter_complex",
+                f"{watermark_filter};[vwater]subtitles='{clean_ass}'[v]",
+                "-map", "[v]",
                 "-map", "1:a",
                 "-c:v", "libx264",
                 "-preset", "faster",
@@ -98,6 +114,7 @@ class VideoComposer:
                 "-pix_fmt", "yuv420p",
                 str(output_video)
             ]
+
 
         res = subprocess.run(cmd, capture_output=True, text=True)
         if res.returncode != 0:

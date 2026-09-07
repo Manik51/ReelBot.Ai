@@ -1331,3 +1331,10 @@ class DocuAssetService:
         out_path.parent.mkdir(parents=True, exist_ok=True)
         img.save(str(out_path), "PNG")
         return out_path
+
+    @classmethod
+    def get_skullbot_watermark(cls) -> Path:
+        """Returns the official SkullBot.Ai semi-transparent roaming watermark badge."""
+        from backend.services.watermark_service import WatermarkService
+        return WatermarkService.get_watermark_image()
+

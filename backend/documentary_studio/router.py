@@ -69,6 +69,12 @@ def get_presets():
     ]
     return presets
 
+@docu_router.get("/search-crimes")
+def search_crimes(q: Optional[str] = "", category: Optional[str] = "all"):
+    """Live search for real Indian crime cases via Serper Google Search."""
+    results = DocuScriptService.search_crime_cases(query=q or "", category=category or "all")
+    return {"cases": results}
+
 @docu_router.post("/generate-storyboard")
 def generate_storyboard(req: StoryboardRequest):
     """Generates an editable 18-20 beat storyboard JSON based on user topic & duration."""
@@ -98,13 +104,13 @@ def render_documentary(req: DocumentaryRenderRequest, background_tasks: Backgrou
         "status": "processing",
         "progress": 5,
         "stage": "Initializing documentary render...",
-        "logs": ["[00:00.00] ⚡ Documentary Studio Engine Initialized."],
+        "logs": ["[00:00.00] ⚡ SkullBot True Crime Documentary Studio Initialized."],
         "video_url": None,
         "video_path": None,
         "seo": {
-            "title": req.storyboard.get("title", "The Untold Business Story #shorts"),
-            "description": req.storyboard.get("seo_description", "Full documentary case study. #reelbot.ai #business"),
-            "tags": ["shorts", "business", "documentary", "history", "reelbot.ai"]
+            "title": req.storyboard.get("title", "True Crime Documentary #shorts"),
+            "description": req.storyboard.get("seo_description", "Full documentary investigation case study. #skullbot.ai #truecrime"),
+            "tags": ["shorts", "truecrime", "documentary", "investigation", "skullbot.ai"]
         },
         "error": None
     }
@@ -177,17 +183,17 @@ def upload_youtube(req: DocuYouTubeUploadRequest):
     if not v_path.exists():
         raise HTTPException(status_code=404, detail="Video file missing from disk.")
 
-    title = req.title or t_data.get("seo", {}).get("title", "Documentary Short")
-    if "#reelbot.ai" not in title:
-        title = f"{title} #reelbot.ai"
+    title = req.title or t_data.get("seo", {}).get("title", "True Crime Documentary Short")
+    if "#skullbot.ai" not in title:
+        title = f"{title} #skullbot.ai"
 
     desc = req.description or t_data.get("seo", {}).get("description", "")
-    if "#reelbot.ai" not in desc:
-        desc = f"{desc}\n\nCreated with #reelbot.ai"
+    if "#skullbot.ai" not in desc:
+        desc = f"{desc}\n\nCreated with #skullbot.ai"
 
-    tags = req.tags or t_data.get("seo", {}).get("tags", ["documentary", "shorts"])
-    if "reelbot.ai" not in tags:
-        tags.append("reelbot.ai")
+    tags = req.tags or t_data.get("seo", {}).get("tags", ["documentary", "shorts", "truecrime"])
+    if "skullbot.ai" not in tags:
+        tags.append("skullbot.ai")
 
     try:
         yt = YouTubeService()

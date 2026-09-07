@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ReelBot.Ai (Beta) - AI True Crime & Documentary Shorts Creator</title>
+  <title>SkullBot.Ai - AI True Crime & Investigative Documentary Creator</title>
   
   <!-- PWA Metadata & Favicon -->
   <link rel="icon" type="image/png" href="/assets/logo.png">
@@ -12,7 +12,7 @@
   <meta name="theme-color" content="#800020">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ReelBot.Ai">
+  <meta name="apple-mobile-web-app-title" content="SkullBot.Ai">
   
   <link rel="stylesheet" href="/style.css?v=2.6.0">
   <link rel="stylesheet" href="/motion_studio.css?v=2.6.0">
@@ -26,11 +26,11 @@
   <header class="app-header">
     <div class="logo-area">
       <div class="logo-icon-box">
-        <img src="/assets/logo.png" class="brand-logo-img" alt="ReelBot.Ai Skull Logo">
+        <img src="/assets/logo.png" class="brand-logo-img" alt="SkullBot.Ai Skull Logo">
       </div>
       <div class="brand-text">
-        <span class="brand-name">ReelBot<span class="brand-accent">.Ai</span></span>
-        <span class="brand-badge">TRUE CRIME & DOCUMENTARY EDITION</span>
+        <span class="brand-name">SkullBot<span class="brand-accent">.Ai</span></span>
+        <span class="brand-badge">💀 TRUE CRIME & INVESTIGATIVE STUDIO</span>
       </div>
     </div>
 
@@ -43,8 +43,8 @@
         <button type="button" id="mode-motion-btn" class="mode-tab-btn mode-motion" title="Switch to Looping Animated Meme Engine">
           <span>⚡</span> Motion Studio
         </button>
-        <button type="button" id="mode-docu-btn" class="mode-tab-btn mode-docu active" title="Switch to 60s Documentary & Business Analysis Studio">
-          <span>📊</span> Documentary Studio
+        <button type="button" id="mode-docu-btn" class="mode-tab-btn mode-docu active" title="Switch to True Crime & Investigative Documentary Studio">
+          <span>💀</span> True Crime Studio
         </button>
       </div>
       <button id="open-settings-btn" class="btn btn-secondary" title="Configure System Settings & API Keys">
@@ -296,14 +296,14 @@
             <span class="dot dot-yellow"></span>
             <span class="dot dot-green"></span>
           </div>
-          <span class="terminal-title">REELBOT_AI_PIPELINE.LOG</span>
+          <span class="terminal-title">SKULLBOT_AI_PIPELINE.LOG</span>
           <div style="display: flex; align-items: center; gap: 8px;">
             <button id="resume-task-btn" class="btn-resume hidden">🔁 Resume Generation</button>
             <span class="terminal-badge">LIVE STREAM</span>
           </div>
         </div>
         <div id="terminal-logs" class="terminal-body">
-          <div class="log-line text-cyan">[00:00.00] ⚡ ReelBot.Ai Engine initialized. Waiting for task stream...</div>
+          <div class="log-line text-cyan">[00:00.00] 💀 SkullBot.Ai Engine initialized. Waiting for task stream...</div>
         </div>
       </div>
     </section>
@@ -395,18 +395,18 @@
             🔄 Create Another Viral Video
           </button>
         </div>
-      </div>
+</div>
     </section>
   </div><!-- /cinema-studio-workspace -->
 
   <!-- ========================================== -->
-  <!-- WORKSPACE 2: REELBOT MOTION STUDIO (GIF LAB) -->
+  <!-- WORKSPACE 2: SKULLBOT MOTION STUDIO (GIF LAB) -->
   <!-- ========================================== -->
   <div id="motion-studio-workspace" class="studio-workspace hidden">
     <!-- HERO BANNER -->
     <section class="motion-hero">
       <div class="motion-hero-glow"></div>
-      <div class="motion-hero-pill">⚡ REELBOT MOTION STUDIO · VIRAL MEME & GIF FACTORY</div>
+      <div class="motion-hero-pill">⚡ SKULLBOT MOTION STUDIO · VIRAL MEME & GIF FACTORY</div>
       <h1 class="motion-hero-title">Create <span class="motion-title-gradient">Viral Animated Shorts</span> in 30 Seconds</h1>
       <p class="motion-hero-desc">
         Transform funny stories, unhinged animal lore, and mind-blowing facts into looping animated shorts with dual-layer blur, whoosh sound effects, and Alex Hormozi captions.
@@ -538,7 +538,7 @@
           <label>🔤 Subtitle Style</label>
           <select id="motion-subtitle-style-select" class="motion-select">
             <option value="hormozi_yellow" selected>🔥 Hormozi Viral Yellow</option>
-            <option value="crimson_wine">🍷 ReelBot Crimson Wine</option>
+            <option value="crimson_wine">🍷 SkullBot Crimson Wine</option>
             <option value="hormozi_green">💚 Beast Voltage Green</option>
             <option value="cyber_cyan">💎 Neon Cyber Cyan</option>
           </select>
@@ -647,7 +647,7 @@
               <span id="motion-yt-status-badge" class="badge badge-success">YouTube Ready</span>
             </div>
             <p style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">
-              Uploads directly to your authorized YouTube channel with <code style="color: #00ff88;">#reelbot.ai</code> automatically included.
+              Uploads directly to your authorized YouTube channel with <code style="color: #00ff88;">#skullbot.ai</code> automatically included.
             </p>
             <button type="button" id="motion-yt-upload-btn" class="btn-motion-youtube">
               <span>▶️</span> Auto-Upload to YouTube Shorts
@@ -688,37 +688,42 @@
       </p>
     </section>
 
-    <!-- STEP 1: NICHE CATEGORY & TOPIC SELECTION -->
+    <!-- STEP 1: CRIME SEARCH & TOPIC SELECTION -->
     <section class="docu-card">
       <div class="docu-card-header">
-        <div class="docu-badge-icon">🚨</div>
+        <div class="docu-badge-icon">💀</div>
         <div>
-          <h3 class="docu-card-title">1. Select Documentary Niche & Topic</h3>
-          <p class="docu-card-desc">Choose a curated Indian true crime investigation, business case study, or enter your custom headline.</p>
+          <h3 class="docu-card-title">1. Search Any Crime (Recent 2024–2025 or Landmark Cases)</h3>
+          <p class="docu-card-desc">Click "Search Crime" to scan the live internet for recent breaking cases, sensational heists, unsolved mysteries, or landmark Indian CBI investigations.</p>
         </div>
       </div>
 
-      <div class="docu-grid-2">
-        <div class="docu-form-group">
-          <label class="docu-label" for="docu-category-select">Documentary Category:</label>
-          <select id="docu-category-select" class="docu-select">
-            <option value="indian_true_crime" selected>🚨 Indian True Crime & Forensic Mysteries (Burari, Telgi, Noida, 1993 Blasts)</option>
-            <option value="corporate_rise_fall">🏢 Corporate Rise & Fall (Nokia, Apple, Blockbuster, Kodak)</option>
-            <option value="tech_titans">🚀 Tech Titans & Billionaires (Musk, Zuckerberg, Steve Jobs, Tata)</option>
-            <option value="market_crashes">📉 Financial Heists & Crashes (Flash Crash, Lehman, Soros)</option>
-            <option value="scandals_history">🔍 Scandals & Unknown History (Pepsi Navy, McDonald's Monopoly)</option>
-          </select>
-        </div>
-
-        <div class="docu-form-group">
-          <label class="docu-label" for="docu-topic-input">Selected Topic / Headline:</label>
-          <input type="text" id="docu-topic-input" class="docu-input" placeholder="e.g. The Burari Deaths: 11 Bodies, 11 Pipes..." value="The Burari Deaths: 11 Bodies, 11 Pipes, One Chilling Diary">
-        </div>
+      <!-- Live Crime Search Bar -->
+      <div class="docu-search-bar-wrap" style="display:flex; gap:10px; margin-bottom:12px;">
+        <input type="text" id="docu-crime-search-input" class="docu-input" style="flex:1;" placeholder="🔍 Search any Indian crime, serial killer, 2024-2025 news, CBI case, robbery..." value="Indian true crime murder mystery">
+        <button type="button" id="docu-search-crime-btn" class="docu-btn" style="white-space:nowrap; padding:10px 22px; font-weight:700; background:linear-gradient(135deg, #dc2626, #991b1b); color:#fff; border:1px solid #ef4444; border-radius:10px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+          <span>🔍</span> Search Crime
+        </button>
       </div>
 
-      <!-- Curated Topics Grid -->
-      <div style="margin-top: 16px;">
-        <label class="docu-label">🔥 Curated Investigative Cases (Click to Select):</label>
+      <!-- Quick Filter Chips -->
+      <div class="docu-filter-pills" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+        <button type="button" class="docu-quick-filter-btn active" data-q="recent 2024 2025 breaking indian crime news" style="background:#1e293b; color:#f1f5f9; border:1px solid #dc2626; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;">🔥 Recent (2024–2025)</button>
+        <button type="button" class="docu-quick-filter-btn" data-q="unsolved mysterious indian murders cold cases" style="background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;">🕵️ Unsolved Mysteries</button>
+        <button type="button" class="docu-quick-filter-btn" data-q="biggest indian bank heists scams" style="background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;">💰 Heists & Scams</button>
+        <button type="button" class="docu-quick-filter-btn" data-q="indian serial killer criminal cases" style="background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;">🩸 Serial Predators</button>
+        <button type="button" class="docu-quick-filter-btn" data-q="landmark cbi investigation cases india" style="background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;">⚖️ Landmark CBI Cases</button>
+      </div>
+
+      <!-- Selected Topic Bar -->
+      <div class="docu-form-group" style="margin-bottom:16px;">
+        <label class="docu-label" for="docu-topic-input">Selected Topic / Headline (Auto-filled on click or enter custom):</label>
+        <input type="text" id="docu-topic-input" class="docu-input" placeholder="e.g. The Burari Deaths: 11 Bodies, 11 Pipes..." value="The Burari Deaths: 11 Bodies, 11 Pipes, One Chilling Diary">
+      </div>
+
+      <!-- Interactive Crime Search Results Grid -->
+      <div>
+        <label class="docu-label" id="docu-results-label">📡 Live Crime Search Results (Click any card to select):</label>
         <div class="docu-topics-grid" id="docu-topics-grid">
           <!-- Populated dynamically -->
         </div>
@@ -731,25 +736,25 @@
         <div class="docu-badge-icon">🎛️</div>
         <div>
           <h3 class="docu-card-title">2. Video Duration, Pacing & Visual Metaphors</h3>
-          <p class="docu-card-desc">Choose between viral Shorts or deep-dive multi-chapter documentaries.</p>
+          <p class="docu-card-desc">Choose between viral Shorts or deep-dive multi-chapter documentaries with exact scene budgets.</p>
         </div>
       </div>
 
-      <!-- Duration Selection -->
+      <!-- Duration Selection with Scene Counts -->
       <div class="docu-form-group">
-        <label class="docu-label">Target Duration & Narrative Format:</label>
+        <label class="docu-label">Target Duration & Narrative Format (Exact Scene Counts):</label>
         <div class="docu-grid-4" style="margin-top: 6px;">
           <div class="docu-duration-pill active" data-duration="60">
-            <strong>60 Seconds</strong><br><small>📱 Crime Short / Reel</small>
+            <strong>60 Seconds (12 Scenes)</strong><br><small>📱 Viral Crime Short (~130 words)</small>
           </div>
           <div class="docu-duration-pill" data-duration="90">
-            <strong>90 Seconds</strong><br><small>⏱️ Extended Short</small>
+            <strong>90 Seconds (18 Scenes)</strong><br><small>⏱️ Extended Crime Short (~195 words)</small>
           </div>
           <div class="docu-duration-pill" data-duration="180">
-            <strong>3 Minutes</strong><br><small>📺 Mini Documentary</small>
+            <strong>3 Minutes (24 Scenes)</strong><br><small>📺 Mid-Form Docu (~385 words)</small>
           </div>
           <div class="docu-duration-pill" data-duration="300">
-            <strong>5 Minutes</strong><br><small>🎥 Full Crime Deep-Dive</small>
+            <strong>5 Minutes (36 Scenes)</strong><br><small>🎥 Deep-Dive Docu (~650 words)</small>
           </div>
         </div>
       </div>
@@ -949,7 +954,7 @@
               <span>📺</span> 1-Click Direct YouTube Upload
             </h4>
             <p style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">
-              Uploads directly to your connected YouTube Shorts channel with <code style="color: #fbbf24;">#reelbot.ai</code> automatically appended.
+              Uploads directly to your connected YouTube Shorts channel with <code style="color: #fbbf24;">#skullbot.ai</code> automatically appended.
             </p>
 
             <div class="docu-form-group" style="margin-bottom: 10px;">
@@ -1005,7 +1010,7 @@
         <div class="creator-details">
           <div>
             <h2 class="creator-name">Manik Shil</h2>
-            <p class="creator-sub">Founder & Lead AI Engineer • ReelBot.Ai</p>
+            <p class="creator-sub">Founder & Lead AI Engineer • SkullBot.Ai</p>
           </div>
 
           <div class="creator-chips-row">
@@ -1015,12 +1020,12 @@
           </div>
 
           <div class="creator-story-box">
-            <h4 class="story-heading">💡 The Inspiration Behind ReelBot.Ai</h4>
+            <h4 class="story-heading">💡 The Inspiration Behind SkullBot.Ai</h4>
             <p class="creator-bio">
-              "The story of <strong>ReelBot.Ai</strong> began with a disruptive dream: Why should aspiring creators and storytellers pay hundreds of dollars every month for expensive AI video subscriptions just to make 60-second shorts?
+              "The story of <strong>SkullBot.Ai</strong> began with a disruptive dream: Why should aspiring creators and storytellers pay hundreds of dollars every month for expensive AI video subscriptions just to make 60-second shorts?
             </p>
             <p class="creator-bio">
-              I built ReelBot.Ai to democratize viral video production — combining cutting-edge LLMs (Gemini AI), Indic Neural Voice AI (Sarvam AI & AI4Bharat), real-time Google search (Serper), and high-performance FFmpeg rendering into a single <strong>100% free, local-first engine</strong>."
+              I built SkullBot.Ai to democratize viral video production — combining cutting-edge LLMs (Gemini AI), Indic Neural Voice AI (Sarvam AI & AI4Bharat), real-time Google search (Serper), and high-performance FFmpeg rendering into a single <strong>100% free, local-first engine</strong>."
             </p>
           </div>
 
@@ -1028,10 +1033,10 @@
           <div class="paypal-support-box">
             <div class="paypal-support-text">
               <h4>☕ Support Open-Source Innovation</h4>
-              <p>If ReelBot.Ai helped you create viral content or saved you expensive software bills, support future development with a coffee!</p>
+              <p>If SkullBot.Ai helped you create viral content or saved you expensive software bills, support future development with a coffee!</p>
             </div>
 
-            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=manikshil51@gmail.com&item_name=Support+ReelBot.Ai+Development&currency_code=USD" target="_blank" class="btn btn-paypal btn-neon-wine">
+            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=manikshil51@gmail.com&item_name=Support+SkullBot.Ai+Development&currency_code=USD" target="_blank" class="btn btn-paypal btn-neon-wine">
               <span class="paypal-icon">☕</span> Buy Me a Coffee
             </a>
           </div>
@@ -1050,7 +1055,7 @@
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-size: 24px;">⚙️</span>
-          <h3>ReelBot.Ai Configuration</h3>
+          <h3>SkullBot.Ai Configuration</h3>
         </div>
         <button id="close-settings-btn" class="btn-close">&times;</button>
       </div>

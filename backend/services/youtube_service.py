@@ -25,8 +25,9 @@ SCOPES = [
     'https://www.googleapis.com/auth/youtube.readonly'
 ]
 
-# Tag always added to every ReelBot upload
-REELBOT_MANDATORY_TAG = "reelbot.ai"
+# Tag always added to every SkullBot upload
+SKULLBOT_MANDATORY_TAG = "skullbot.ai"
+REELBOT_MANDATORY_TAG = "skullbot.ai"
 
 
 class YouTubeService:
@@ -179,16 +180,16 @@ class YouTubeService:
 
         youtube = build('youtube', 'v3', credentials=creds)
 
-        # Clean tags and always inject #reelbot.ai
+        # Clean tags and always inject #skullbot.ai
         clean_tags = [t.lstrip("#").strip() for t in tags if t.strip()]
-        if REELBOT_MANDATORY_TAG not in clean_tags:
-            clean_tags.append(REELBOT_MANDATORY_TAG)
+        if SKULLBOT_MANDATORY_TAG not in clean_tags:
+            clean_tags.append(SKULLBOT_MANDATORY_TAG)
 
-        # Add reelbot.ai to description footer too
+        # Add skullbot.ai to description footer too
         desc_with_branding = (
             description.strip()
-            + f"\n\n🎬 Made with ReelBot.Ai — AI-powered viral video factory\n"
-            + "#reelbot.ai #shorts #viral"
+            + f"\n\n🎬 Made with SkullBot.Ai — AI-Powered True Crime & Documentary Engine\n"
+            + "#skullbot.ai #shorts #truecrime #documentary"
         )
 
         body = {

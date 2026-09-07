@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 class Settings:
-    APP_NAME: str = "ReelBot.Ai"
+    APP_NAME: str = "SkullBot.Ai"
     APP_VERSION: str = "2.6.0-beta"
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     STORAGE_DIR: Path = BASE_DIR / "storage"
@@ -62,7 +62,7 @@ class Settings:
         },
         {
             "id": "crimson_wine",
-            "name": "🍷 ReelBot Crimson Wine (True Crime Red Glow)",
+            "name": "🍷 SkullBot Crimson Wine (True Crime Red Glow)",
             "primary_color": "&H00FFFFFF",
             "highlight_color": "&H003A1EC4",
             "outline_color": "&H00000000",

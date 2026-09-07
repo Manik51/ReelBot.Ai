@@ -21,7 +21,7 @@
   async function initDocuStudio() {
     setupThreeWaySwitcher();
     await fetchPresets();
-    attachCategoryListeners();
+    attachCrimeSearchListeners();
     attachDurationListeners();
     attachStoryboardListeners();
     attachRenderListeners();
@@ -88,7 +88,6 @@
       if (!res.ok) throw new Error("Could not fetch documentary presets");
       docuState.presetsData = await res.json();
       populateDropdowns();
-      renderTopicChips(docuState.selectedCategory);
     } catch (err) {
       console.warn("[DocuStudio] Preset loading warning:", err);
     }
@@ -147,47 +146,117 @@
     }
   }
 
-  // ── 3. CATEGORY & DURATION SELECTION ─────────────────────────────────────
-  function attachCategoryListeners() {
-    const catSelect = document.getElementById('docu-category-select');
-    if (catSelect) {
-      catSelect.addEventListener('change', (e) => {
-        docuState.selectedCategory = e.target.value;
-        renderTopicChips(docuState.selectedCategory);
+  // ── 3. CRIME SEARCH & SELECTION ──────────────────────────────────────────
+  function attachCrimeSearchListeners() {
+    const searchBtn = document.getElementById('docu-search-crime-btn');
+    const searchInput = document.getElementById('docu-crime-search-input');
+    
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => {
+        const q = searchInput ? searchInput.value.trim() : '';
+        searchCrimes(q);
       });
     }
-  }
 
-  function renderTopicChips(catKey) {
-    const grid = document.getElementById('docu-topics-grid');
-    if (!grid || !docuState.presetsData) return;
-
-    const catData = docuState.presetsData.categories[catKey];
-    if (!catData || !catData.topics) {
-      grid.innerHTML = '<p style="color:#94a3b8; font-size:12px;">Select or type any custom topic below.</p>';
-      return;
+    if (searchInput) {
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          searchCrimes(searchInput.value.trim());
+        }
+      });
     }
 
-    grid.innerHTML = catData.topics.map((t, idx) => `
-      <button type="button" class="docu-topic-chip ${idx === 0 ? 'active' : ''}" data-topic="${t.title}">
-        <strong>${t.title}</strong>
-        <small>"${t.hook}"</small>
-      </button>
-    `).join('');
+    // Quick filter buttons
+    document.querySelectorAll('.docu-quick-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.docu-quick-filter-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.borderColor = '#334155';
+        });
+        btn.classList.add('active');
+        btn.style.borderColor = '#dc2626';
 
-    grid.querySelectorAll('.docu-topic-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        grid.querySelectorAll('.docu-topic-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        const topicInput = document.getElementById('docu-topic-input');
-        if (topicInput) topicInput.value = chip.dataset.topic;
+        const q = btn.dataset.q || '';
+        if (searchInput) searchInput.value = q;
+        searchCrimes(q);
       });
     });
 
-    // Set first topic by default
-    if (catData.topics[0]) {
-      const topicInput = document.getElementById('docu-topic-input');
-      if (topicInput && !topicInput.value) topicInput.value = catData.topics[0].title;
+    // Run default initial search on load
+    searchCrimes('recent 2024 2025 breaking indian crime news');
+  }
+
+  async function searchCrimes(query = '') {
+    const grid = document.getElementById('docu-topics-grid');
+    const searchBtn = document.getElementById('docu-search-crime-btn');
+    if (!grid) return;
+
+    if (searchBtn) {
+      searchBtn.disabled = true;
+      searchBtn.innerHTML = '<span>⏳</span> Searching...';
+    }
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: #94a3b8;">
+        <span style="font-size: 24px; display: block; margin-bottom: 8px;">📡</span>
+        Scanning live internet & Indian crime archives for "${query || 'landmark cases'}"...
+      </div>
+    `;
+
+    try {
+      const resp = await fetch(`/api/documentary/search-crimes?q=${encodeURIComponent(query)}`);
+      const data = await resp.json();
+      const cases = (data && data.cases) ? data.cases : [];
+
+      if (!cases.length) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #f87171;">
+            No specific crime cases found for this query. You can type any custom crime topic directly in the box below.
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = cases.map((c, idx) => `
+        <button type="button" class="docu-topic-chip ${idx === 0 ? 'active' : ''}" data-topic="${c.title}" style="text-align: left; position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #ef4444; background: rgba(220, 38, 38, 0.2); border: 1px solid rgba(220, 38, 38, 0.4); padding: 2px 8px; border-radius: 6px;">
+              ${c.tag || c.case_type || 'CRIME CASE'}
+            </span>
+            <span style="font-size: 10px; color: #94a3b8;">${c.era || (c.source ? 'WEB SOURCE' : 'CBI ARCHIVE')}</span>
+          </div>
+          <strong style="color: #f8fafc; font-size: 13px; line-height: 1.3; margin-bottom: 4px; display: block;">${c.title}</strong>
+          <small style="color: #cbd5e1; font-size: 11px; line-height: 1.4; display: block;">"${c.hook || c.summary || ''}"</small>
+        </button>
+      `).join('');
+
+      // Set first topic by default
+      if (cases[0]) {
+        const topicInput = document.getElementById('docu-topic-input');
+        if (topicInput) topicInput.value = cases[0].title;
+      }
+
+      // Attach click listeners to new cards
+      grid.querySelectorAll('.docu-topic-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          grid.querySelectorAll('.docu-topic-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          const topicInput = document.getElementById('docu-topic-input');
+          if (topicInput) topicInput.value = chip.dataset.topic;
+        });
+      });
+    } catch (err) {
+      console.error('[DocuStudio] Crime search failed:', err);
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #f87171;">
+          Crime search error. Please check your internet connection or type custom topic below.
+        </div>
+      `;
+    } finally {
+      if (searchBtn) {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = '<span>🔍</span> Search Crime';
+      }
     }
   }
 
@@ -504,7 +573,7 @@
     const seoTitle = document.getElementById('docu-yt-title');
     const seoDesc = document.getElementById('docu-yt-desc');
     if (seoTitle) seoTitle.value = task.seo?.title || 'Documentary Short #shorts';
-    if (seoDesc) seoDesc.value = task.seo?.description || 'Created with #reelbot.ai';
+    if (seoDesc) seoDesc.value = task.seo?.description || 'Created with #skullbot.ai';
 
     resCard?.scrollIntoView({ behavior: 'smooth' });
   }

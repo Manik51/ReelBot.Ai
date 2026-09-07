@@ -1,7 +1,7 @@
 {
-  "name": "ReelBot.Ai (Beta)",
-  "short_name": "ReelBot",
-  "description": "AI Viral Shorts & Reels Creator Studio",
+  "name": "SkullBot.Ai",
+  "short_name": "SkullBot",
+  "description": "AI True Crime & Documentary Shorts Creator Studio",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#07070a",

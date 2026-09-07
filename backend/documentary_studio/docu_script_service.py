@@ -1,5 +1,6 @@
 import json
 import re
+import requests
 from typing import List, Dict, Any, Optional
 from google import genai
 from google.genai import types
@@ -89,6 +90,132 @@ class DocuScriptService:
         }
 
     @classmethod
+    def search_crime_cases(cls, query: str = "", category: str = "all") -> List[Dict[str, Any]]:
+        """
+        Live search engine for real-world crime cases (recent or historic).
+        Uses Serper Google Search API to find real investigations, news headlines, and police cases.
+        Falls back to comprehensive curated cases if offline or empty query.
+        """
+        results = []
+        serper_key = getattr(settings, "SERPER_API_KEY", "")
+        
+        q_clean = (query or "").strip()
+        category_queries = {
+            "trending_recent": "sensational Indian crime news investigation 2024 2025",
+            "heists_scams": "biggest financial scam bank heist Indian history case study",
+            "unsolved_mysteries": "unsolved Indian murder mystery forensic cases CBI",
+            "serial_killers": "notorious Indian serial killer cases true crime documentary",
+            "all": "sensational Indian true crime cases investigation documentary"
+        }
+        
+        search_prompt = f"Indian true crime {q_clean} case investigation documentary" if q_clean else category_queries.get(category, category_queries["all"])
+
+        if serper_key:
+            try:
+                headers = {"X-API-KEY": serper_key, "Content-Type": "application/json"}
+                payload = json.dumps({"q": search_prompt, "num": 10})
+                r = requests.post("https://google.serper.dev/search", headers=headers, data=payload, timeout=8)
+                if r.status_code == 200:
+                    data = r.json()
+                    for item in data.get("organic", []):
+                        raw_title = item.get("title", "")
+                        raw_snippet = item.get("snippet", "")
+                        if len(raw_snippet) < 25 or any(bad in raw_title.lower() for bad in ["reddit", "podcast", "forum", "quora"]):
+                            continue
+                        
+                        clean_title = re.sub(r"\s*[-|·].*$", "", raw_title).strip()
+                        if len(clean_title) < 10:
+                            clean_title = raw_title[:60]
+
+                        results.append({
+                            "title": clean_title,
+                            "hook": raw_snippet[:150] + ("..." if len(raw_snippet) > 150 else ""),
+                            "tag": "Live Internet Result",
+                            "source": item.get("link", "")
+                        })
+            except Exception as e:
+                print(f"[DocuScript] Live crime search error: {e}")
+
+        # Curated iconic Indian crime benchmark database
+        curated_cases = [
+            {
+                "title": "The Burari Deaths: 11 Bodies, 11 Pipes, One Chilling Diary",
+                "hook": "On July 1, 2018, Delhi Police entered a normal family home to find 11 bodies hanging in absolute silence.",
+                "tag": "Delhi · 2018",
+                "category": "unsolved_mysteries"
+            },
+            {
+                "title": "Abdul Karim Telgi: The ₹30,000 Crore Fake Stamp Paper Empire",
+                "hook": "A fruit seller at a railway station bought a government printing press and shook the Indian financial system.",
+                "tag": "Karnataka/Maharashtra · 2001",
+                "category": "heists_scams"
+            },
+            {
+                "title": "The Cyanide Mohan Case: India's Deadliest Silent Predator",
+                "hook": "For 5 years, 20 women vanished from Karnataka bus stands without a single drop of blood left behind.",
+                "tag": "Karnataka · 2009",
+                "category": "serial_killers"
+            },
+            {
+                "title": "The 2008 Noida Double Murder Mystery & The Botched Investigation",
+                "hook": "A 14-year-old girl and the household helper were murdered inside a locked apartment, baffling India's top detectives.",
+                "tag": "Noida, UP · 2008",
+                "category": "unsolved_mysteries"
+            },
+            {
+                "title": "The 1993 Bombay Blasts: How A RDX Scooter Solved The Conspiracy",
+                "hook": "On March 12, 1993, 12 serial bombs shook Mumbai. One unexploded scooter at Worli cracked the entire syndicate.",
+                "tag": "Mumbai · 1993",
+                "category": "heists_scams"
+            },
+            {
+                "title": "The Akku Yadav Mob Justice: When 200 Women Stormed A Courtroom",
+                "hook": "On August 13, 2004, a notorious predator walked into a Nagpur court surrounded by police. He never walked out alive.",
+                "tag": "Nagpur · 2004",
+                "category": "trending_recent"
+            },
+            {
+                "title": "The Nithari Serial Murders: The House of Horrors in Sector 31",
+                "hook": "In late 2006, skeletal remains of missing children were excavated from a municipal drain behind a quiet Noida bungalow.",
+                "tag": "Noida · 2006",
+                "category": "serial_killers"
+            },
+            {
+                "title": "The Koodathayi Cyanide Murders: The Jolly Joseph Case",
+                "hook": "Over 14 years, 6 members of the same family collapsed and died after eating meals prepared by one woman.",
+                "tag": "Kerala · 2019",
+                "category": "serial_killers"
+            },
+            {
+                "title": "The 1986 Charles Sobhraj Tihar Jail Breakout",
+                "hook": "Known as the Serpent, he threw a poisoned birthday feast for jail guards and casually walked out of Asia's most secure prison.",
+                "tag": "Delhi Tihar · 1986",
+                "category": "heists_scams"
+            },
+            {
+                "title": "The Harshad Mehta 1992 Securities Scam: The Bull Who Broke Dalal Street",
+                "hook": "Using fake bank receipts and structural loopholes, one broker siphoned thousands of crores from public sector banks.",
+                "tag": "Mumbai · 1992",
+                "category": "heists_scams"
+            }
+        ]
+
+        if not q_clean:
+            if category and category != "all":
+                curated_filtered = [c for c in curated_cases if c.get("category") == category]
+                results = results + (curated_filtered or curated_cases)
+            else:
+                results = results + curated_cases
+        else:
+            q_lower = q_clean.lower()
+            matched_curated = [c for c in curated_cases if any(w in c["title"].lower() or w in c["hook"].lower() for w in q_lower.split())]
+            results = results + matched_curated
+            if not results:
+                results = curated_cases
+
+        return results[:10]
+
+    @classmethod
     def generate_storyboard(
         cls,
         topic: str,
@@ -109,13 +236,19 @@ class DocuScriptService:
         ]
         allowed = allowed_metaphors or default_metaphors
 
-        # Flexible pacing: Shorts (~5s/beat) vs Long-form Deep Dives (~8.5s/beat)
-        if duration_sec <= 90:
-            target_beats = max(6, min(14, int(duration_sec / 5.0)))
-            target_words = int(duration_sec * 2.10)
+        # Exact scene / beat budget per format:
+        if duration_sec <= 65:
+            target_beats = 12
+            target_words = 130
+        elif duration_sec <= 95:
+            target_beats = 18
+            target_words = 195
+        elif duration_sec <= 190:
+            target_beats = 24
+            target_words = 385
         else:
-            target_beats = max(14, min(32, int(duration_sec / 8.5)))
-            target_words = int(duration_sec * 1.95)
+            target_beats = 36
+            target_words = 650
 
         api_key = settings.GEMINI_API_KEY
         if api_key and api_key.strip():

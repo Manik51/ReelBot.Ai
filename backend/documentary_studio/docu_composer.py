@@ -162,14 +162,26 @@ class DocuComposer:
                 master_grade = "eq=contrast=1.18:brightness=-0.04:saturation=0.82,noise=alls=10:allf=t+u,vignette=PI/3.5"
             else:
                 master_grade = "eq=contrast=1.12:brightness=-0.03:saturation=0.90,noise=alls=10:allf=t+u,vignette=PI/3.6"
+            
+            # Dynamic roaming SkullBot.Ai watermark
+            from backend.services.watermark_service import WatermarkService
+            watermark_img = WatermarkService.get_watermark_image()
+            watermark_filter = WatermarkService.get_floating_overlay_filter(
+                video_in_label="[graded]",
+                watermark_in_idx=2,
+                out_label="[vwater]"
+            )
+
             filter_master = (
                 f"[0:v]{master_grade}[graded];"
-                f"[graded]subtitles='{escaped_sub}'[vfinal]"
+                f"{watermark_filter};"
+                f"[vwater]subtitles='{escaped_sub}'[vfinal]"
             )
             cmd_master = [
                 "ffmpeg", "-y",
                 "-i", str(video_concat),
                 "-i", str(mixed_audio),
+                "-loop", "1", "-i", str(watermark_img),
                 "-filter_complex", filter_master,
                 "-map", "[vfinal]",
                 "-map", "1:a",
