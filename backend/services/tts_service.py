@@ -1,351 +1,264 @@
-import asyncio
-import base64
-import os
+"""
+ReelBot TTS Service — Sarvam AI (Bulbul v3) + Kokoro ONLY.
+Edge TTS and T5 have been completely removed.
+"""
 import re
+import base64
 import subprocess
+import requests
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-import edge_tts
-import requests
 import soundfile as sf
 
 from backend.config import settings
 
-class TTSService:
-    _kokoro_instance = None
 
-    @classmethod
-    def _get_kokoro(cls):
-        if cls._kokoro_instance is None:
-            from kokoro_onnx import Kokoro
-            model_path = settings.MODELS_DIR / "kokoro-v0_19.onnx"
-            voices_path = settings.MODELS_DIR / "voices-v1.0.bin"
-            if not model_path.exists() or not voices_path.exists():
-                raise FileNotFoundError("Kokoro ONNX models not found in storage/models")
-            cls._kokoro_instance = Kokoro(str(model_path), str(voices_path))
-        return cls._kokoro_instance
+# ──────────────────────────────────────────────────────────────────────────────
+# Studio mastering helpers
+# ──────────────────────────────────────────────────────────────────────────────
 
-    @staticmethod
-    def _apply_studio_mastering(raw_audio_path: Path, output_audio_path: Path):
-        """Applies broadcast-grade vocal mastering (warm bass EQ, studio compression, loudness boost)."""
-        filter_str = (
-            "highpass=f=80,"
-            "equalizer=f=220:t=q:w=1.5:g=2.8,"
-            "equalizer=f=3600:t=q:w=1.4:g=2.2,"
-            "acompressor=threshold=0.15:ratio=3.2:attack=5:release=50,"
-            "volume=1.35"
+def _apply_studio_mastering(raw_path: Path, out_path: Path) -> None:
+    """Broadcast-grade EQ + compression + loudness normalisation via FFmpeg."""
+    af = (
+        "highpass=f=80,"
+        "equalizer=f=200:t=q:w=1.4:g=3.0,"
+        "equalizer=f=1200:t=q:w=1.0:g=1.5,"
+        "equalizer=f=4000:t=q:w=1.2:g=2.5,"
+        "acompressor=threshold=0.12:ratio=4:attack=4:release=60:makeup=2,"
+        "loudnorm=I=-14:LRA=7:TP=-1.5"
+    )
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", str(raw_path),
+        "-af", af,
+        "-c:a", "libmp3lame",
+        "-q:a", "2",
+        str(out_path),
+    ]
+    try:
+        subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+    except Exception:
+        import shutil
+        if raw_path != out_path:
+            shutil.copy(raw_path, out_path)
+
+
+def _build_word_timestamps(text: str, duration: float) -> List[Dict[str, Any]]:
+    raw_words = text.strip().split()
+    words: List[Dict[str, Any]] = []
+    if not raw_words:
+        return words
+    tpw = duration / len(raw_words)
+    for i, w in enumerate(raw_words):
+        s = i * tpw
+        words.append({"word": w, "start": round(s, 3), "end": round(s + tpw, 3), "duration": round(tpw, 3)})
+    return words
+
+
+def _audio_duration(path: Path) -> float:
+    try:
+        with sf.SoundFile(str(path)) as f:
+            return len(f) / f.samplerate
+    except Exception:
+        return 0.0
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Sarvam AI – Bulbul v3
+# ──────────────────────────────────────────────────────────────────────────────
+
+VALID_BULBUL_V3 = [
+    "shreya", "rahul", "amit", "aditya", "ritu",
+    "ashutosh", "simran", "pooja", "dev", "rohan",
+]
+
+def _detect_lang(text: str) -> str:
+    if re.search(r"[\u0980-\u09FF]", text):
+        return "bn-IN"
+    if re.search(r"[\u0900-\u097F]", text):
+        return "hi-IN"
+    return "en-IN"
+
+def _clean_text(text: str) -> str:
+    cleaned = re.sub(r'["""\'\(\)\[\]]', '', text).strip()
+    return cleaned or text.strip()
+
+def _sarvam_pace(rate: str) -> float:
+    return {"+5%": 1.02, "+10%": 1.05, "+15%": 1.08, "+20%": 1.12, "-5%": 0.95}.get(rate, 1.0)
+
+
+def generate_sarvam(
+    text: str,
+    voice_id: str,
+    rate: str = "+10%",
+    output_path: Path = None,
+) -> Dict[str, Any]:
+    key = settings.SARVAM_API_KEY.strip()
+    if not key:
+        raise ValueError(
+            "Sarvam AI API key is not set. Please open Configure and add your Sarvam API key."
         )
-        cmd = [
-            "ffmpeg", "-y",
-            "-i", str(raw_audio_path),
-            "-af", filter_str,
-            "-c:a", "libmp3lame",
-            "-q:a", "2",
-            str(output_audio_path)
-        ]
-        try:
-            subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        except Exception:
-            if raw_audio_path != output_audio_path:
-                import shutil
-                shutil.copy(raw_audio_path, output_audio_path)
 
-    # ==========================================================
-    # ১. Sarvam AI Engine (Hyper-Realistic Hindi & Bengali)
-    # ==========================================================
-    @classmethod
-    def _generate_sarvam_voiceover(
-        cls,
-        text: str,
-        language_code: str,
-        output_path: Path,
-        speaker: str = "meera"
-    ) -> Dict[str, Any]:
-        api_key = os.getenv("SARVAM_API_KEY")
-        if not api_key:
-            raise ValueError("SARVAM_API_KEY environment variable is missing!")
+    speaker = voice_id.replace("sarvam:", "").strip().lower()
+    lang = _detect_lang(text)
 
-        url = "https://api.sarvam.ai/text-to-speech"
-        headers = {
-            "api-subscription-key": api_key,
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "inputs": [text],
-            "target_language_code": language_code,
+    if speaker not in VALID_BULBUL_V3:
+        speaker = "shreya" if lang == "bn-IN" else ("amit" if lang == "hi-IN" else "rahul")
+
+    cleaned = _clean_text(text)
+
+    resp = requests.post(
+        "https://api.sarvam.ai/text-to-speech",
+        headers={"api-subscription-key": key, "Content-Type": "application/json"},
+        json={
+            "inputs": [cleaned],
+            "target_language_code": lang,
             "speaker": speaker,
-            "pitch": 0,
-            "pace": 1.05,
-            "loudness": 1.5,
+            "pace": _sarvam_pace(rate),
             "speech_sample_rate": 22050,
             "enable_preprocessing": True,
-            "model": "bulbul:v1"
-        }
+            "model": "bulbul:v3",
+        },
+        timeout=30,
+    )
+    if resp.status_code != 200:
+        raise RuntimeError(f"Sarvam AI error ({resp.status_code}): {resp.text[:300]}")
 
-        response = requests.post(url, json=payload, headers=headers)
-        if response.status_code != 200:
-            raise Exception(f"Sarvam AI Error: {response.text}")
+    audios = resp.json().get("audios", [])
+    if not audios:
+        raise RuntimeError("Sarvam AI returned empty audio. Check your API quota.")
 
-        audio_base64 = response.json()["audios"][0]
-        audio_bytes = base64.b64decode(audio_base64)
+    audio_bytes = base64.b64decode(audios[0])
 
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        raw_audio = output_path.parent / f"raw_{output_path.stem}.wav"
-        with open(raw_audio, "wb") as f:
-            f.write(audio_bytes)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    raw_wav = output_path.parent / f"_raw_{output_path.stem}.wav"
+    raw_wav.write_bytes(audio_bytes)
 
-        cls._apply_studio_mastering(raw_audio, output_path)
-        try:
-            raw_audio.unlink(missing_ok=True)
-        except Exception:
-            pass
+    _apply_studio_mastering(raw_wav, output_path)
+    try:
+        raw_wav.unlink(missing_ok=True)
+    except Exception:
+        pass
 
-        duration = 0.0
-        try:
-            with sf.SoundFile(str(output_path)) as sound_file:
-                duration = len(sound_file) / sound_file.samplerate
-        except Exception:
-            duration = max(len(text.split()) * 0.35, 1.0)
+    dur = _audio_duration(output_path)
+    if dur < 0.5:
+        dur = max(len(cleaned.split()) * 0.42, 2.5)
 
-        raw_words = text.strip().split()
-        words = []
-        if raw_words:
-            time_per_word = duration / max(len(raw_words), 1)
-            for idx, w in enumerate(raw_words):
-                start = idx * time_per_word
-                words.append({
-                    "word": w,
-                    "start": round(start, 3),
-                    "end": round(start + time_per_word, 3),
-                    "duration": round(time_per_word, 3)
-                })
+    return {
+        "audio_path": str(output_path),
+        "duration": round(dur, 3),
+        "words": _build_word_timestamps(cleaned, dur),
+    }
 
-        return {
-            "audio_path": str(output_path),
-            "duration": round(duration, 3),
-            "words": words
-        }
 
-    # ==========================================================
-    # ২. F5-TTS Engine (Local Zero-Shot Cloning)
-    # ==========================================================
-    @classmethod
-    def _generate_f5_voiceover(
-        cls,
-        text: str,
-        output_path: Path,
-        ref_audio_path: Optional[Path] = None
-    ) -> Dict[str, Any]:
-        from f5_tts.api import F5TTS
-        import torchaudio
+# ──────────────────────────────────────────────────────────────────────────────
+# Kokoro ONNX – English only
+# ──────────────────────────────────────────────────────────────────────────────
 
-        tts = F5TTS()
-        if not ref_audio_path or not Path(ref_audio_path).exists():
-            ref_audio_path = settings.STORAGE_DIR / "ref_audio" / "sample.wav"
+_kokoro_instance = None
 
-        raw_wav = output_path.parent / f"raw_{output_path.stem}.wav"
-        wav, sr, _ = tts.infer(
-            ref_file=str(ref_audio_path) if Path(ref_audio_path).exists() else "",
-            ref_text="",
-            gen_text=text
-        )
-        torchaudio.save(str(raw_wav), wav, sr)
+def _get_kokoro():
+    global _kokoro_instance
+    if _kokoro_instance is None:
+        from kokoro_onnx import Kokoro
+        mp = settings.BASE_DIR / "storage" / "models" / "kokoro-v0_19.onnx"
+        vp = settings.BASE_DIR / "storage" / "models" / "voices-v1.0.bin"
+        if not mp.exists() or not vp.exists():
+            raise FileNotFoundError(
+                "Kokoro model files not found in storage/models/. "
+                "Please download kokoro-v0_19.onnx and voices-v1.0.bin."
+            )
+        _kokoro_instance = Kokoro(str(mp), str(vp))
+    return _kokoro_instance
 
-        cls._apply_studio_mastering(raw_wav, output_path)
-        try:
-            raw_wav.unlink(missing_ok=True)
-        except Exception:
-            pass
 
-        duration = 0.0
-        with sf.SoundFile(str(output_path)) as sound_file:
-            duration = len(sound_file) / sound_file.samplerate
+def generate_kokoro(
+    text: str,
+    voice_id: str,
+    rate: str = "+10%",
+    output_path: Path = None,
+) -> Dict[str, Any]:
+    kokoro_voice = voice_id.replace("kokoro:", "").strip()
+    speed = {"+10%": 1.1, "+15%": 1.15, "+20%": 1.2}.get(rate, 1.0)
 
-        raw_words = text.strip().split()
-        words = []
-        if raw_words:
-            time_per_word = duration / max(len(raw_words), 1)
-            for idx, w in enumerate(raw_words):
-                start = idx * time_per_word
-                words.append({
-                    "word": w,
-                    "start": round(start, 3),
-                    "end": round(start + time_per_word, 3),
-                    "duration": round(time_per_word, 3)
-                })
+    import soundfile as _sf
 
-        return {
-            "audio_path": str(output_path),
-            "duration": round(duration, 3),
-            "words": words
-        }
+    kokoro = _get_kokoro()
+    samples, sample_rate = kokoro.create(text, voice=kokoro_voice, speed=speed, lang="en-us")
 
-    # ==========================================================
-    # ৩. Kokoro Voiceover
-    # ==========================================================
-    @classmethod
-    def _generate_kokoro_voiceover(
-        cls,
-        text: str,
-        voice_id: str,
-        rate: str,
-        output_path: Path
-    ) -> Dict[str, Any]:
-        kokoro_voice = voice_id.replace("kokoro:", "").strip()
-        speed = 1.1 if rate == "+10%" else (1.2 if rate == "+20%" else 1.0)
-        
-        kokoro = cls._get_kokoro()
-        samples, sample_rate = kokoro.create(text, voice=kokoro_voice, speed=speed, lang="en-us")
-        
-        temp_wav = output_path.parent / f"temp_{output_path.stem}.wav"
-        sf.write(str(temp_wav), samples, sample_rate)
-        
-        cls._apply_studio_mastering(temp_wav, output_path)
-        try:
-            temp_wav.unlink(missing_ok=True)
-        except Exception:
-            pass
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_wav = output_path.parent / f"_kraw_{output_path.stem}.wav"
+    _sf.write(str(tmp_wav), samples, sample_rate)
 
-        duration = len(samples) / sample_rate
-        raw_words = text.strip().split()
-        words = []
-        if raw_words:
-            time_per_word = duration / max(len(raw_words), 1)
-            for idx, w in enumerate(raw_words):
-                start = idx * time_per_word
-                words.append({
-                    "word": w,
-                    "start": round(start, 3),
-                    "end": round(start + time_per_word, 3),
-                    "duration": round(time_per_word, 3)
-                })
+    _apply_studio_mastering(tmp_wav, output_path)
+    try:
+        tmp_wav.unlink(missing_ok=True)
+    except Exception:
+        pass
 
-        return {
-            "audio_path": str(output_path),
-            "duration": round(duration, 3),
-            "words": words
-        }
+    dur = len(samples) / sample_rate
+    return {
+        "audio_path": str(output_path),
+        "duration": round(dur, 3),
+        "words": _build_word_timestamps(text, dur),
+    }
 
-    # ==========================================================
-    # ৪. Edge-TTS (Fallback Engine)
-    # ==========================================================
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Public entry point
+# ──────────────────────────────────────────────────────────────────────────────
+
+class TTSService:
+    """
+    Routing:
+      sarvam:*             → Sarvam AI Bulbul v3  (Bengali / Hindi / English Indic)
+      kokoro:*             → Kokoro ONNX           (English only)
+      Bengali/Hindi text   → Always Sarvam AI
+      Edge TTS / T5        → REMOVED
+    """
+
     @staticmethod
-    async def generate_edge_voiceover_async(
-        text: str,
-        voice: str = "hi-IN-MadhurNeural",
-        rate: str = "+5%",
-        output_path: Optional[Path] = None
-    ) -> Dict[str, Any]:
-        communicate = edge_tts.Communicate(text, voice, rate=rate)
-        words: List[Dict[str, Any]] = []
-        audio_data = bytearray()
-
-        async for chunk in communicate.stream():
-            if chunk["type"] == "audio":
-                audio_data.extend(chunk["data"])
-            elif chunk["type"] == "WordBoundary":
-                offset_sec = chunk["offset"] / 10000000.0
-                duration_sec = chunk["duration"] / 10000000.0
-                word_text = chunk["text"]
-                words.append({
-                    "word": word_text,
-                    "start": round(offset_sec, 3),
-                    "end": round(offset_sec + duration_sec, 3),
-                    "duration": round(duration_sec, 3)
-                })
-
-        if not audio_data:
-            raise RuntimeError("Failed to generate TTS audio data.")
-
-        if output_path is None:
-            raise ValueError("output_path is required")
-
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        raw_mp3 = output_path.parent / f"raw_{output_path.name}"
-        with open(raw_mp3, "wb") as f:
-            f.write(audio_data)
-
-        TTSService._apply_studio_mastering(raw_mp3, output_path)
-        try:
-            raw_mp3.unlink(missing_ok=True)
-        except Exception:
-            pass
-
-        duration = 0.0
-        try:
-            with sf.SoundFile(str(output_path)) as sound_file:
-                duration = len(sound_file) / sound_file.samplerate
-        except Exception:
-            if words:
-                duration = words[-1]["end"] + 0.3
-
-        if not words:
-            raw_words = text.strip().split()
-            if raw_words:
-                time_per_word = duration / max(len(raw_words), 1)
-                for idx, w in enumerate(raw_words):
-                    start = idx * time_per_word
-                    words.append({
-                        "word": w,
-                        "start": round(start, 3),
-                        "end": round(start + time_per_word, 3),
-                        "duration": round(time_per_word, 3)
-                    })
-
-        return {
-            "audio_path": str(output_path),
-            "duration": round(duration, 3),
-            "words": words
-        }
-
-    # ==========================================================
-    # ৫. Main Unified Orchestrator
-    # ==========================================================
-    @classmethod
     def generate_voiceover(
-        cls,
         text: str,
-        voice: str = "hi-IN-MadhurNeural",
-        rate: str = "+5%",
-        output_path: Optional[Path] = None
+        voice: str = "piper:bn_BD-google-medium",
+        rate: str = "+10%",
+        output_path: Optional[Path] = None,
     ) -> Dict[str, Any]:
         if output_path is None:
             raise ValueError("output_path is required")
 
-        # স্ক্রিপ্ট ডিটেকশন (হিন্দি ও বাংলা বর্ণমালা)
-        has_hindi = bool(re.search(r"[\u0900-\u097F]", text))
-        has_bengali = bool(re.search(r"[\u0980-\u09FF]", text))
+        # 1. Route Piper TTS (Local Neural Engine for Bengali, Hindi & English)
+        if voice.startswith("piper:"):
+            from backend.services.piper_service import PiperService
+            return PiperService.generate_speech(text, voice, rate, output_path)
 
-        # ১. Sarvam AI মোড (যদি SARVAM_API_KEY থাকে অথবা voice-এ 'sarvam' উল্লেখ থাকে)
-        if (os.getenv("SARVAM_API_KEY") and (has_hindi or has_bengali)) or "sarvam" in voice.lower():
-            target_lang = "bn-IN" if has_bengali else "hi-IN"
-            speaker = "meera" if "female" in voice.lower() else "amol"
-            try:
-                return cls._generate_sarvam_voiceover(text, target_lang, output_path, speaker=speaker)
-            except Exception as e:
-                print(f"Sarvam AI fallback due to: {e}")
-
-        # ২. F5-TTS মোড
-        if "f5" in voice.lower():
-            try:
-                return cls._generate_f5_voiceover(text, output_path)
-            except Exception as e:
-                print(f"F5-TTS fallback due to: {e}")
-
-        # ৩. Kokoro (English) মোড
+        # 2. Route Kokoro TTS (Local ONNX Studio Voices for English)
         if voice.startswith("kokoro:"):
-            if has_hindi:
-                voice = "hi-IN-MadhurNeural"
-                return asyncio.run(cls.generate_edge_voiceover_async(text, voice, rate, output_path))
-            elif has_bengali:
-                voice = "bn-IN-TanishaaNeural"
-                return asyncio.run(cls.generate_edge_voiceover_async(text, voice, rate, output_path))
-            else:
-                try:
-                    return cls._generate_kokoro_voiceover(text, voice, rate, output_path)
-                except Exception:
-                    fallback_voice = "en-US-AndrewMultilingualNeural"
-                    return asyncio.run(cls.generate_edge_voiceover_async(text, fallback_voice, rate, output_path))
+            return generate_kokoro(text, voice, rate, output_path)
 
-        # ৪. ডিফল্ট Edge-TTS ফলব্যাক
-        return asyncio.run(cls.generate_edge_voiceover_async(text, voice, rate, output_path))
+        has_bengali = bool(re.search(r"[\u0980-\u09FF]", text))
+        has_hindi = bool(re.search(r"[\u0900-\u097F]", text))
+
+        if has_bengali:
+            from backend.services.piper_service import PiperService
+            return PiperService.generate_speech(text, "piper:bn_BD-google-medium", rate, output_path)
+
+        if has_hindi:
+            from backend.services.piper_service import PiperService
+            return PiperService.generate_speech(text, "piper:hi_IN-pratham-medium", rate, output_path)
+
+        # Default English → Kokoro Adam
+        return generate_kokoro(text, "kokoro:am_adam", rate, output_path)
+
+    # Backward compat & convenience
+    generate_kokoro_voiceover = staticmethod(generate_kokoro)
+
+    @staticmethod
+    def generate_audio_with_timings(
+        text: str,
+        voice_id: str = "kokoro:am_adam",
+        speed: str = "+0%",
+        output_path: Optional[Path] = None,
+    ):
+        res = TTSService.generate_voiceover(text=text, voice=voice_id, rate=speed, output_path=output_path)
+        return Path(res.get("audio_path", str(output_path))), res.get("words", [])

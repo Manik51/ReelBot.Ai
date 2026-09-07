@@ -1,11 +1,22 @@
-import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Union
 from backend.config import settings
 
 class SubtitleService:
+    """
+    Production Hormozi-Style Subtitle Engine
+    Implements sliding context window (1 context word before + active pop word + 1 context word after)
+    with scale punch animation, dimmed context alpha, and bold 92pt mobile-optimized typography.
+    """
+
     @staticmethod
-    def format_ass_time(seconds: float) -> str:
+    def format_ass_time(val: Union[int, float]) -> str:
+        """Converts seconds (or ms if > 600) to ASS timestamp format H:MM:SS.CC"""
+        if isinstance(val, (int, float)) and val > 600:
+            seconds = val / 1000.0
+        else:
+            seconds = float(val)
+
         hours = int(seconds // 3600)
         minutes = int((seconds % 3600) // 60)
         secs = int(seconds % 60)
@@ -19,74 +30,36 @@ class SubtitleService:
         default_style = {
             "id": "hormozi_yellow",
             "name": "Hormozi Viral Yellow",
-            "primary_color": "&H00FFFFFF",
-            "highlight_color": "&H0000E5FF",  # Yellow Highlight in ASS format
-            "outline_color": "&H00000000",
-            "shadow_color": "&H80000000",
-            "font_size": 76,
+            "primary_color": "&H00FFFFFF",      # White
+            "highlight_color": "&H0000E5FF",    # Vibrant Yellow (&HAABBGGRR: Yellow is 00E5FF)
+            "outline_color": "&H00000000",      # Solid Black outline
+            "shadow_color": "&H80000000",       # Semi-transparent black shadow
+            "font_size": 92,
             "font_name": "Impact",
-            "bold": 1,
-            "max_words_per_line": 3
+            "outline_size": 7.0,
+            "shadow_size": 3.0,
+            "margin_bottom": 220,
+            "pop_scale": 118,
+            "pop_duration_ms": 160
         }
 
         if isinstance(style_input, dict):
-            return style_input
+            merged = default_style.copy()
+            merged.update(style_input)
+            return merged
 
         if isinstance(style_input, str):
             for s in settings.SUBTITLE_STYLES:
                 if s["id"] == style_input:
-                    return s
+                    merged = default_style.copy()
+                    merged.update(s)
+                    merged["font_size"] = max(merged.get("font_size", 92), 88)
+                    merged["outline_size"] = 7.0
+                    merged["shadow_size"] = 3.0
+                    merged["margin_bottom"] = 220
+                    return merged
 
         return default_style
-
-    @classmethod
-    def align_subtitle_words(
-        cls,
-        tts_words: List[Dict[str, Any]],
-        custom_subtitle_text: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
-        """
-        Gemini-র দেওয়া Banglish/Hinglish টেক্সটকে TTS-এর নিখুঁত টাইমস্ট্যাম্পের সাথে সিঙ্ক করে।
-        """
-        if not custom_subtitle_text or not custom_subtitle_text.strip():
-            return tts_words
-
-        clean_custom = re.sub(r"[^\w\s]", "", custom_subtitle_text).strip().upper()
-        custom_tokens = clean_custom.split()
-
-        if not custom_tokens or not tts_words:
-            return tts_words
-
-        # শব্দ সংখ্যা সমান হলে সরাসরি রিপ্লেস করা
-        if len(custom_tokens) == len(tts_words):
-            aligned = []
-            for idx, w in enumerate(tts_words):
-                aligned.append({
-                    "word": custom_tokens[idx],
-                    "start": w["start"],
-                    "end": w["end"],
-                    "duration": w.get("duration", round(w["end"] - w["start"], 3))
-                })
-            return aligned
-
-        # শব্দ সংখ্যা ভিন্ন হলে টাইম ফ্রেম সমানুপাতিক হারে ভাগ করা
-        total_duration = tts_words[-1]["end"]
-        start_offset = tts_words[0]["start"]
-        active_time = max(total_duration - start_offset, 0.5)
-        time_per_word = active_time / len(custom_tokens)
-
-        aligned = []
-        for idx, token in enumerate(custom_tokens):
-            w_start = start_offset + (idx * time_per_word)
-            w_end = w_start + time_per_word
-            aligned.append({
-                "word": token,
-                "start": round(w_start, 3),
-                "end": round(w_end, 3),
-                "duration": round(time_per_word, 3)
-            })
-
-        return aligned
 
     @classmethod
     def generate_hormozi_ass(
@@ -95,70 +68,86 @@ class SubtitleService:
         output_ass_path: Path,
         style_preset: Optional[Union[str, Dict[str, Any]]] = None,
         subtitle_style: Optional[Union[str, Dict[str, Any]]] = None,
-        custom_subtitle_text: Optional[str] = None,
         video_width: int = 1080,
         video_height: int = 1920
     ) -> Path:
+        """
+        Generates production-ready Alex Hormozi ASS subtitle file using Claude's
+        signature sliding context window technique:
+        - Each spoken word has its own dialogue event
+        - Current spoken word: Hot style + punch scale animation (118% -> 100%)
+        - Context words: Normal style with dimmed alpha (&H55&)
+        - 1 word before + active word + 1 word after displayed simultaneously
+        """
         raw_preset = style_preset or subtitle_style
         preset = cls._resolve_style(raw_preset)
 
         font_name = preset.get("font_name", "Impact")
-        font_size = preset.get("font_size", 76)
-        primary_color = preset.get("primary_color", "&H00FFFFFF")
-        highlight_color = preset.get("highlight_color", "&H0000E5FF")
-        outline_color = preset.get("outline_color", "&H00000000")
-        shadow_color = preset.get("shadow_color", "&H80000000")
-        max_words = preset.get("max_words_per_line", 3)
+        font_size = preset.get("font_size", 92)
+        color_normal = preset.get("primary_color", "&H00FFFFFF")
+        color_highlight = preset.get("highlight_color", "&H0000E5FF")
+        color_outline = preset.get("outline_color", "&H00000000")
+        color_shadow = preset.get("shadow_color", "&H80000000")
+        outline_size = preset.get("outline_size", 7.0)
+        shadow_size = preset.get("shadow_size", 3.0)
+        margin_bottom = preset.get("margin_bottom", 220)
+        pop_scale = preset.get("pop_scale", 118)
+        pop_dur = preset.get("pop_duration_ms", 160)
+        ctx = 1  # 1 word before + active + 1 word after
 
-        # Banglish/Hinglish কাস্টম টেক্সট সিঙ্ক করা
-        aligned_words = cls.align_subtitle_words(words, custom_subtitle_text)
+        header = f"""[Script Info]
+ScriptType: v4.00+
+PlayResX: {video_width}
+PlayResY: {video_height}
+ScaledBorderAndShadow: yes
+WrapStyle: 0
 
-        header_lines = [
-            "[Script Info]",
-            "ScriptType: v4.00+",
-            f"PlayResX: {video_width}",
-            f"PlayResY: {video_height}",
-            "ScaledBorderAndShadow: yes",
-            "",
-            "[V4+ Styles]",
-            "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
-            f"Style: HormoziStyle,{font_name},{font_size},{primary_color},&H000000FF,{outline_color},{shadow_color},-1,0,0,0,100,100,2,0,1,6.0,3.5,2,60,60,480,1",
-            "",
-            "[Events]",
-            "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"
-        ]
-        header = "\n".join(header_lines) + "\n"
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Normal,{font_name},{font_size},{color_normal},{color_normal},{color_outline},{color_shadow},-1,0,0,0,100,100,3,0,1,{outline_size},{shadow_size},2,80,80,{margin_bottom},1
+Style: Hot,{font_name},{font_size},{color_highlight},{color_highlight},{color_outline},{color_shadow},-1,0,0,0,{pop_scale},{pop_scale},3,0,1,{outline_size},{shadow_size},2,80,80,{margin_bottom},1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+"""
 
         events = []
-        if not aligned_words:
+        if not words:
             output_ass_path.parent.mkdir(parents=True, exist_ok=True)
             output_ass_path.write_text(header, encoding="utf-8")
             return output_ass_path
 
-        chunks = []
-        for i in range(0, len(aligned_words), max_words):
-            chunks.append(aligned_words[i:i + max_words])
+        n = len(words)
+        for i, w in enumerate(words):
+            raw_start = w.get("start", 0)
+            raw_end = w.get("end", 0)
+            t_start = cls.format_ass_time(raw_start)
+            t_end = cls.format_ass_time(raw_end)
 
-        for chunk in chunks:
-            for active_idx, active_word in enumerate(chunk):
-                start_time = cls.format_ass_time(active_word["start"])
-                end_time = cls.format_ass_time(active_word["end"])
+            # Sliding context window: 1 word before + current + 1 word after
+            win_start = max(0, i - ctx)
+            win_end = min(n, i + ctx + 1)
+            window = words[win_start:win_end]
+            cur_idx = i - win_start
 
-                line_parts = []
-                for w_idx, w in enumerate(chunk):
-                    clean_w = str(w["word"]).replace("{", "").replace("}", "").strip().upper()
-                    if w_idx == active_idx:
-                        # Active Word Pop Animation (Hormozi Neon Highlight + Scale Pop)
-                        line_parts.append(r"{\c" + highlight_color + r"\b1\fscx112\fscy112}" + clean_w + r"{\r}")
-                    else:
-                        # Regular Word
-                        line_parts.append(r"{\c" + primary_color + r"\b1}" + clean_w + r"{\r}")
+            parts = []
+            for j, ww in enumerate(window):
+                clean_text = str(ww.get("word", "")).replace("{", "").replace("}", "").strip().upper()
+                if not clean_text:
+                    continue
 
-                dialogue_text = " ".join(line_parts)
-                event_line = f"Dialogue: 0,{start_time},{end_time},HormoziStyle,,0,0,0,,{dialogue_text}"
-                events.append(event_line)
+                if j == cur_idx:
+                    # Current active word: Hot style + bouncy punch animation
+                    anim = r"{\rHot\fscx" + str(pop_scale) + r"\fscy" + str(pop_scale) + r"\t(0," + str(pop_dur) + r",\fscx100\fscy100)}" + clean_text
+                    parts.append(anim)
+                else:
+                    # Context words: Normal style with dimmed alpha (&H55&)
+                    parts.append(r"{\rNormal\alpha&H55&}" + clean_text)
 
-        full_ass_content = header + "\n".join(events) + "\n"
+            line_text = "  ".join(parts)
+            events.append(f"Dialogue: 0,{t_start},{t_end},Normal,,0,0,0,,{line_text}")
+
+        full_content = header + "\n".join(events) + "\n"
         output_ass_path.parent.mkdir(parents=True, exist_ok=True)
-        output_ass_path.write_text(full_ass_content, encoding="utf-8")
+        output_ass_path.write_text(full_content, encoding="utf-8")
         return output_ass_path

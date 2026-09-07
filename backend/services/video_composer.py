@@ -4,15 +4,20 @@ from typing import List, Optional
 
 class VideoComposer:
     @staticmethod
-    def build_scene_clip(raw_video: Path, output_clip: Path, duration: float) -> Path:
+    def build_scene_clip(raw_video: Path, output_clip: Path, duration: float, scene_id: int = 0) -> Path:
+        """Builds a vertical 1080x1920 scene clip with cinematic grading, vignette, and dynamic camera motion."""
         output_clip.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Professional Cinematic Color Grading + Vignette (Focus on Center Subject)
         vf_filter = (
             "scale=1080:1920:force_original_aspect_ratio=increase,"
             "crop=1080:1920,"
             "setsar=1,"
             "fps=30,"
-            "eq=contrast=1.12:brightness=-0.02:saturation=1.18"
+            "eq=contrast=1.14:brightness=0.01:saturation=1.24,"
+            "vignette=PI/4.5"
         )
+        
         cmd = [
             "ffmpeg", "-y",
             "-threads", "0",
@@ -68,7 +73,7 @@ class VideoComposer:
                 "-map", "[a]",
                 "-c:v", "libx264",
                 "-preset", "faster",
-                "-crf", "22",
+                "-crf", "20",
                 "-c:a", "aac",
                 "-b:a", "192k",
                 "-shortest",
@@ -86,7 +91,7 @@ class VideoComposer:
                 "-map", "1:a",
                 "-c:v", "libx264",
                 "-preset", "faster",
-                "-crf", "22",
+                "-crf", "20",
                 "-c:a", "aac",
                 "-b:a", "192k",
                 "-shortest",

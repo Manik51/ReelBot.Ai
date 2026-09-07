@@ -3,149 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ReelBot.Ai (Beta) | AI Viral Shorts & Reels Creator</title>
+  <title>ReelBot.Ai (Beta) - AI True Crime & Documentary Shorts Creator</title>
   
-  <!-- PWA & Mobile Support -->
-  <link rel="manifest" href="/manifest.json">
+  <!-- PWA Metadata & Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <link rel="apple-touch-icon" href="/assets/icon-192.png">
+  <link rel="manifest" href="/manifest.json?v=2.6.0">
   <meta name="theme-color" content="#800020">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ReelBot">
-  <link rel="apple-touch-icon" href="/assets/manik_shil.png">
-
-  <link rel="stylesheet" href="/style.css">
+  <meta name="apple-mobile-web-app-title" content="ReelBot.Ai">
+  
+  <link rel="stylesheet" href="/style.css?v=2.6.0">
+  <link rel="stylesheet" href="/motion_studio.css?v=2.6.0">
+  <link rel="stylesheet" href="/documentary_studio.css?v=1.0.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Top Navigation -->
-  <header class="app-nav">
-    <div class="nav-brand">
-      <div class="skull-logo-box">
-        <span class="skull-icon">💀</span>
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="app-header">
+    <div class="logo-area">
+      <div class="logo-icon-box">
+        <img src="/assets/logo.png" class="brand-logo-img" alt="ReelBot.Ai Skull Logo">
       </div>
-      <div>
-        <h1>ReelBot<span class="highlight">.Ai</span> <span class="tag beta-tag">BETA</span></h1>
-        <p class="tagline">Viral 60s Shorts & Reels Engine • 100% Free</p>
+      <div class="brand-text">
+        <span class="brand-name">ReelBot<span class="brand-accent">.Ai</span></span>
+        <span class="brand-badge">TRUE CRIME & DOCUMENTARY EDITION</span>
       </div>
     </div>
 
-    <div class="nav-center-links">
-      <a href="#step-topic" class="nav-link">Studio</a>
-      <button id="open-creator-modal-nav-btn" class="nav-link-btn">About Developer</button>
-      <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=manikshil51@gmail.com&item_name=Support+ReelBot.Ai+Development&currency_code=USD" target="_blank" class="btn-coffee-nav">
-        ☕ Buy Me a Coffee
-      </a>
-    </div>
-
-    <div class="nav-actions">
-      <button id="open-settings-btn" class="btn btn-secondary btn-configure-nav">⚙️ Configure</button>
+    <!-- Right Header Actions (Configure button) -->
+    <div class="header-actions">
+      <div class="mode-switcher-container">
+        <button type="button" id="mode-cinema-btn" class="mode-tab-btn mode-cinema" title="Switch to Realistic Stock Footage Engine">
+          <span>🎥</span> Cinema Studio
+        </button>
+        <button type="button" id="mode-motion-btn" class="mode-tab-btn mode-motion" title="Switch to Looping Animated Meme Engine">
+          <span>⚡</span> Motion Studio
+        </button>
+        <button type="button" id="mode-docu-btn" class="mode-tab-btn mode-docu active" title="Switch to 60s Documentary & Business Analysis Studio">
+          <span>📊</span> Documentary Studio
+        </button>
+      </div>
+      <button id="open-settings-btn" class="btn btn-secondary" title="Configure System Settings & API Keys">
+        <span class="btn-icon">⚙️</span>
+        <span class="btn-text">Configure API Keys</span>
+      </button>
     </div>
   </header>
 
-  <main class="container">
-    <!-- STEP 1: TRENDING TOPICS & SCRIPT GENERATION -->
+  <!-- MAIN CONTAINER -->
+  <main class="main-container">
+    <!-- ========================================== -->
+    <!-- WORKSPACE 1: CINEMA STUDIO (ORIGINAL ENGINE) -->
+    <!-- ========================================== -->
+    <div id="cinema-studio-workspace" class="studio-workspace">
+      <!-- HERO SECTION -->
+      <section class="hero-section">
+      <div class="hero-glow"></div>
+      <div class="hero-tag">🕵️‍♂️ 100% FREE AI VIRAL SHORTS & DOCUMENTARY ENGINE</div>
+      <h1 class="hero-title">Create <span class="gradient-text">Spine-Chilling</span> Mystery Shorts in 60s</h1>
+      <p class="hero-subtitle">
+        Turn real unsolved cold cases, live breaking mysteries, and viral topics into million-view vertical videos with 1-to-1 visual matching & Alex Hormozi captions.
+      </p>
+    </section>
+
+    <!-- STEP 1: TOPIC SELECTION & SCRIPT GENERATOR -->
     <section class="card step-section" id="step-topic">
       <div class="step-header">
         <span class="step-num">1</span>
         <div>
-          <h2>Choose or Discover Viral Video Topics</h2>
-          <p class="step-desc">Pick from curated trends below, or click <strong>Find Trends</strong> to search live viral algorithms.</p>
+          <h2>Choose a Mystery Topic or Search Live Trends</h2>
+          <p class="step-desc">Pick from real-time live True Crime news & cold cases with verified sources, or type your custom topic.</p>
         </div>
       </div>
 
-      <!-- Trending Topics Section with Find Trends Button -->
-      <div class="trending-section">
-        <div class="trending-header-row">
-          <div class="trending-header-title">
-            <span class="fire-icon">🔥</span>
-            <span class="trending-title">RECENT VIRAL TRENDING TOPICS</span>
+      <!-- Quick Viral Topic Chips & Real Search Trend Button -->
+      <div class="chips-container-wrapper">
+        <div class="chips-header-row">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label class="section-sublabel">🕵️‍♂️ Real-Time Live True Crime & Viral Topics:</label>
+            <span id="trend-engine-badge" class="badge badge-info" style="font-size: 10px;">Live Search</span>
           </div>
-          <button id="find-trends-btn" class="btn-find-trends">
-            <span class="btn-icon">⚡</span> Find Trends (AI Search)
-          </button>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button id="quick-open-serper-btn" class="btn-copy-mini" style="background: rgba(0, 229, 255, 0.1); border-color: var(--accent-cyan); color: var(--accent-cyan);">⚙️ Serper / Sarvam Setup</button>
+            <button id="find-trends-btn" class="btn-find-trends" title="Click to search live Google / Serper True Crime news">
+              <span class="btn-icon">⚡</span> Search Live True Crime News
+            </button>
+          </div>
         </div>
-
-        <div class="trending-grid" id="trending-grid-container">
-          <button class="chip trending-chip" data-topic="5 Dark Psychological Tricks That Actually Work In Real Life" data-tone="Storytelling / Suspense">
-            <span class="chip-emoji">💀</span> 5 Dark Psychology Tricks <span class="chip-views">8.5M</span>
+        
+        <!-- Live Headlines Grid -->
+        <div class="chips-list" id="viral-chips">
+          <button class="topic-chip active" data-topic="The Man Who Vanished From A Plane With $200,000">
+            <span>🕵️‍♂️ DB Cooper Disappearance</span>
+            <span class="chip-source-tag">FBI Files ↗</span>
           </button>
-          <button class="chip trending-chip" data-topic="Why 99% Of People Stay Poor And 3 Rules To Break Free" data-tone="High Energy / Viral">
-            <span class="chip-emoji">💰</span> Wealth & Money Rules <span class="chip-views">12.4M</span>
+          <button class="topic-chip" data-topic="What 9 Hikers Saw Before Dying In Dyatlov Pass">
+            <span>💀 Dyatlov Pass Incident</span>
+            <span class="chip-source-tag">Historical Archive ↗</span>
           </button>
-          <button class="chip trending-chip" data-topic="The Scariest Discovery Found at the Deepest Edge of the Ocean" data-tone="Storytelling / Suspense">
-            <span class="chip-emoji">🌊</span> Mariana Trench Secrets <span class="chip-views">6.1M</span>
+          <button class="topic-chip" data-topic="The 52 Hertz Whale: The Loneliest Creature in the Abyss">
+            <span>🐋 Mariana Trench Mystery</span>
+            <span class="chip-source-tag">Oceanography ↗</span>
           </button>
-          <button class="chip trending-chip" data-topic="3 CIA Body Language Tricks to Spot a Liar in 5 Seconds" data-tone="Storytelling / Suspense">
-            <span class="chip-emoji">👁️</span> Read People Like CIA <span class="chip-views">9.2M</span>
+          <button class="topic-chip" data-topic="The Ship Found Sailing With No Crew And Warm Meals">
+            <span>🚢 Mary Celeste Ghost Ship</span>
+            <span class="chip-source-tag">Naval Records ↗</span>
           </button>
-          <button class="chip trending-chip" data-topic="The 2-Minute Habit Rule That Destroys Laziness Forever" data-tone="Motivational / Powerful">
-            <span class="chip-emoji">⚡</span> 2-Minute Habit Hack <span class="chip-views">4.8M</span>
+          <button class="topic-chip" data-topic="The Ghost Radio Station UVB-76 That Still Broadcasts">
+            <span>📻 Russian UVB-76 Buzzer</span>
+            <span class="chip-source-tag">Cold War Signal ↗</span>
           </button>
-          <button class="chip trending-chip" data-topic="How Autonomous AI Agents Will Reshape Humanity by 2027" data-tone="High Energy / Viral">
-            <span class="chip-emoji">🤖</span> AI Job Shock In 2027 <span class="chip-views">7.3M</span>
-          </button>
-          <button class="chip trending-chip" data-topic="3 Stoic Rules For Men to Become Emotionally Unstoppable" data-tone="Motivational / Powerful">
-            <span class="chip-emoji">⚔️</span> Stoic Mindset Rules <span class="chip-views">5.9M</span>
-          </button>
-          <button class="chip trending-chip" data-topic="The Creepy Unsolved Disappearance Of Flight 370" data-tone="Storytelling / Suspense">
-            <span class="chip-emoji">⏳</span> Unsolved Air Mystery <span class="chip-views">10.1M</span>
-          </button>
-          <button class="chip trending-chip" data-topic="How Billionaires Legally Pay 0% Taxes in 3 Steps" data-tone="Informative / Documentary">
-            <span class="chip-emoji">💎</span> How Billionaires Pay 0% Tax <span class="chip-views">8.9M</span>
-          </button>
-          <button class="chip trending-chip" data-topic="What Actually Happens to Your Brain on 4 Hours of Sleep" data-tone="Informative / Documentary">
-            <span class="chip-emoji">🧠</span> Brain On 4-Hour Sleep <span class="chip-views">6.8M</span>
-          </button>
-          <button class="chip trending-chip" data-topic="Inside the $500 Million Secret Supercar Vault of Dubai Royalty" data-tone="High Energy / Viral">
-            <span class="chip-emoji">🏎️</span> Dubai Prince Supercars <span class="chip-views">14.2M</span>
-          </button>
-          <button class="chip trending-chip" data-topic="The Simulation Theory Proof That Confuses Top Quantum Physicists" data-tone="Storytelling / Suspense">
-            <span class="chip-emoji">🌌</span> Simulation Theory Proof <span class="chip-views">11.1M</span>
+          <button class="topic-chip" data-topic="The Man from Taured: Traveler from a Non-Existent Country">
+            <span>👁️ Traveler from Taured</span>
+            <span class="chip-source-tag">Tokyo Incident ↗</span>
           </button>
         </div>
       </div>
 
       <div class="form-group" style="margin-top: 18px;">
-        <label for="video-topic">Selected Video Topic / Prompt</label>
-        <textarea id="video-topic" rows="2" placeholder="Click any trending topic above or write your own custom idea...">5 Dark Psychological Tricks That Actually Work In Real Life</textarea>
+        <label for="topic-input">Selected Topic / Headline</label>
+        <div class="input-with-action">
+          <input type="text" id="topic-input" placeholder="e.g. The Chilling Disappearance of Flight 19 in Bermuda Triangle..." value="The Man Who Vanished From A Plane With $200,000">
+        </div>
       </div>
 
       <div class="grid-3">
         <div class="form-group">
-          <label for="script-lang">Narration Language</label>
-          <select id="script-lang">
-            <option value="English" selected>English (US / Global)</option>
+          <label for="script-language">Language & Subtitle Format</label>
+          <select id="script-language">
+            <option value="Bengali" selected>Bengali (বাংলা Voice + Banglish Subs)</option>
             <option value="Hindi">Hindi (हिंदी Voice + Hinglish Subs)</option>
-            <option value="Bengali">Bengali (বাংলা Voice + Banglish Subs)</option>
+            <option value="English">English (English Voice + Latin Subs)</option>
             <option value="Spanish">Spanish (Español)</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="script-tone">Tone & Energy</label>
+          <label for="script-tone">Narrative Pacing & Atmosphere</label>
           <select id="script-tone">
-            <option value="High Energy / Viral" selected>⚡ High Energy / Viral (MrBeast Pacing)</option>
-            <option value="Storytelling / Suspense">🕵️ Storytelling / Suspense (Alex Hormozi)</option>
-            <option value="Motivational / Powerful">💪 Motivational / Powerful</option>
-            <option value="Informative / Documentary">📚 Informative / Deep Dive</option>
+            <option value="Storytelling / Suspense" selected>🕵️ Storytelling / Suspense (Alex Hormozi)</option>
+            <option value="High Energy / Viral">⚡ High Energy / Fast Paced</option>
+            <option value="Informative / Documentary">📚 Dark Documentary / Deep Dive</option>
+            <option value="Motivational / Powerful">💪 Dramatic & Powerful</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="target-duration">Target Duration</label>
+          <label for="target-duration">Target Duration (Strict Exact Cuts)</label>
           <select id="target-duration">
-            <option value="60" selected>60 Seconds (18-20 Rapid Scenes)</option>
-            <option value="45">45 Seconds (14-15 Rapid Scenes)</option>
-            <option value="30">30 Seconds (9-10 Rapid Scenes)</option>
+            <option value="60" selected>60 Seconds (Exact 20 Rapid Cuts - 3s max)</option>
+            <option value="45">45 Seconds (Exact 15 Rapid Cuts - 3s max)</option>
+            <option value="30">30 Seconds (Exact 10 Rapid Cuts - 3s max)</option>
           </select>
         </div>
       </div>
 
       <div class="action-row">
         <button id="generate-script-btn" class="btn btn-primary btn-neon-red">
-          <span class="btn-icon">⚡</span> Generate Viral 18-Scene Script
+          <span class="btn-icon">⚡</span> Generate Synchronized Video Script
         </button>
       </div>
     </section>
@@ -157,7 +176,7 @@
         <div class="title-with-badge">
           <div>
             <h2 id="script-title-display">Generated Scene-by-Scene Script</h2>
-            <p class="step-desc">18-20 rapid visual scenes (3s each). Review and customize voice narration and viral on-screen subtitles.</p>
+            <p class="step-desc">1-to-1 Visual Tag & Voiceover synchronization (3s per cut). Review voice narration and visual search tags.</p>
           </div>
           <span id="estimated-duration-badge" class="badge badge-info">⏱️ ~60s</span>
         </div>
@@ -174,13 +193,13 @@
         <span class="step-num">3</span>
         <div>
           <h2>Studio Customization & Video Synthesis</h2>
-          <p class="step-desc">Select crystal-clear AI Voiceover, 1.5x pacing, Alex Hormozi animated captions, and ducked background music.</p>
+          <p class="step-desc">Select AI Voiceover (Sarvam AI / AI4Bharat / Neural Studio), Alex Hormozi animated captions, and ducked background music.</p>
         </div>
       </div>
 
       <div class="grid-2">
         <div class="form-group">
-          <label for="voice-select">🎙️ AI Voiceover (Auto-Matched for Crystal-Clear Pronunciation)</label>
+          <label for="voice-select">🎙️ AI Voiceover (Sarvam AI / AI4Bharat / Neural Studio)</label>
           <select id="voice-select">
             <!-- Populated via API -->
           </select>
@@ -189,10 +208,9 @@
         <div class="form-group">
           <label for="voice-rate">⚡ Speech Delivery Speed & Sync</label>
           <select id="voice-rate">
-            <option value="+35%" selected>⚡ 1.4x - 1.5x Viral Shorts Pacing (Recommended)</option>
-            <option value="+50%">🚀 1.5x Ultra Rapid Fire</option>
-            <option value="+20%">🔥 1.25x Dynamic Speed</option>
-            <option value="+0%">🎙️ 1.0x Normal Speed</option>
+            <option value="+10%" selected>🎙️ +10% Deep Storyteller Natural Human Speed (Recommended)</option>
+            <option value="+20%">⚡ +20% Suspense Shorts Pacing</option>
+            <option value="+0%">🎙️ +0% Deep Storyteller Slow & Calm</option>
           </select>
         </div>
       </div>
@@ -212,7 +230,7 @@
 
         <div class="form-group">
           <div class="label-row">
-            <label for="bgm-select">🎵 Background Music (Auto-Ducked under Voice)</label>
+            <label for="bgm-select">🎵 Background Music (Dark Suspense Ambient)</label>
             <button id="open-configure-bgm-btn" class="link-hint-btn">⚙️ Manage Music Tracks ↗</button>
           </div>
           <select id="bgm-select">
@@ -227,7 +245,7 @@
 
       <div class="action-row" style="margin-top: 24px;">
         <button id="generate-video-btn" class="btn btn-success btn-large btn-block btn-neon-wine">
-          <span class="btn-icon">🚀</span> Render Complete 1080x1920 Viral Short Video
+          <span class="btn-icon">🚀</span> Render Complete 1080x1920 Viral Video
         </button>
       </div>
     </section>
@@ -266,7 +284,7 @@
       <div class="pipeline-steps-grid">
         <div id="pipe-voice" class="pipe-step">1. 🎙️ Crystal Voiceover</div>
         <div id="pipe-subs" class="pipe-step">2. 🔥 Hormozi Captions</div>
-        <div id="pipe-media" class="pipe-step">3. 🎥 18-20 HD Clips</div>
+        <div id="pipe-media" class="pipe-step">3. 🎥 Rapid HD Clips</div>
         <div id="pipe-render" class="pipe-step">4. ⚡ FFmpeg Composition</div>
       </div>
 
@@ -290,13 +308,13 @@
       </div>
     </section>
 
-    <!-- STEP 5: VIDEO PREVIEW, YOUTUBE SEO PACK & 1-CLICK ACTIONS -->
+    <!-- STEP 5: VIDEO PREVIEW, YOUTUBE DIRECT UPLOADER & VIRAL SEO PACK -->
     <section class="card step-section hidden" id="step-result">
       <div class="step-header">
         <span class="step-num">5</span>
         <div>
-          <h2>🎉 Your Viral Video is Ready!</h2>
-          <p class="step-desc">Preview your 1080x1920 9:16 vertical short below with burned animated subtitles and high-retention editing.</p>
+          <h2>🎉 Your Viral Short is Ready!</h2>
+          <p class="step-desc">Preview your 1080x1920 9:16 vertical short below with cinematic color grading, burned animated captions and suspense editing.</p>
         </div>
       </div>
 
@@ -309,23 +327,45 @@
         </div>
 
         <div class="download-sidebar">
-          <h3 id="result-title">Viral Short Title</h3>
+          <h3 id="result-title">Viral Title</h3>
           
           <a id="download-video-btn" href="#" download="viral_short.mp4" class="btn btn-primary btn-large btn-block btn-neon-red">
             <span class="btn-icon">⬇️</span> Download HD Video (MP4)
           </a>
 
+          <!-- YouTube Direct Auto-Upload Card -->
+          <div class="youtube-direct-card">
+            <div class="yt-card-header">
+              <span class="yt-badge">🔴 YouTube Shorts</span>
+              <span id="yt-channel-badge" class="badge badge-pending">1-Click Auto Upload</span>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label for="yt-privacy-select" style="font-size: 11px; color: var(--text-muted);">Privacy Visibility</label>
+              <select id="yt-privacy-select" style="padding: 8px 12px; font-size: 13px;">
+                <option value="public" selected>🌍 Public (Publish Immediately)</option>
+                <option value="unlisted">🔗 Unlisted (Only with Link)</option>
+                <option value="private">🔒 Private (Save as Draft)</option>
+              </select>
+            </div>
+
+            <button id="direct-youtube-upload-btn" class="btn btn-block btn-youtube-direct">
+              <span style="font-size: 18px;">🚀</span> Auto-Upload to YouTube Shorts
+            </button>
+            <div id="yt-upload-status" class="yt-upload-status-msg hidden"></div>
+          </div>
+
           <!-- YouTube Viral SEO Pack Card -->
           <div class="seo-pack-box">
             <div class="seo-pack-header">
-              <span>🚀 Viral YouTube SEO Metadata</span>
+              <span>🚀 Viral SEO Metadata</span>
               <button id="copy-all-seo-btn" class="btn-copy-mini">📋 Copy All</button>
             </div>
 
             <div class="seo-field">
               <label>🎯 Click-Worthy Title:</label>
               <div class="copy-input-row">
-                <input type="text" id="seo-title-input" readonly value="">
+                <input type="text" id="seo-title-input" value="">
                 <button class="btn-copy-inline" onclick="copyField('seo-title-input', this)">Copy</button>
               </div>
             </div>
@@ -333,7 +373,7 @@
             <div class="seo-field">
               <label>📝 SEO Description:</label>
               <div class="copy-input-row">
-                <textarea id="seo-desc-input" rows="2" readonly></textarea>
+                <textarea id="seo-desc-input" rows="2"></textarea>
                 <button class="btn-copy-inline" onclick="copyField('seo-desc-input', this)">Copy</button>
               </div>
             </div>
@@ -341,12 +381,12 @@
             <div class="seo-field">
               <label>🏷️ Trending Viral #Tags:</label>
               <div class="copy-input-row">
-                <input type="text" id="seo-tags-input" readonly value="">
+                <input type="text" id="seo-tags-input" value="">
                 <button class="btn-copy-inline" onclick="copyField('seo-tags-input', this)">Copy</button>
               </div>
             </div>
 
-            <a href="https://studio.youtube.com" target="_blank" class="btn-youtube-upload">
+            <a id="open-yt-studio-link" href="https://studio.youtube.com" target="_blank" class="btn-youtube-upload">
               <span style="font-size: 16px;">▶️</span> Open YouTube Studio to Upload ↗
             </a>
           </div>
@@ -357,7 +397,579 @@
         </div>
       </div>
     </section>
-  </main>
+  </div><!-- /cinema-studio-workspace -->
+
+  <!-- ========================================== -->
+  <!-- WORKSPACE 2: REELBOT MOTION STUDIO (GIF LAB) -->
+  <!-- ========================================== -->
+  <div id="motion-studio-workspace" class="studio-workspace hidden">
+    <!-- HERO BANNER -->
+    <section class="motion-hero">
+      <div class="motion-hero-glow"></div>
+      <div class="motion-hero-pill">⚡ REELBOT MOTION STUDIO · VIRAL MEME & GIF FACTORY</div>
+      <h1 class="motion-hero-title">Create <span class="motion-title-gradient">Viral Animated Shorts</span> in 30 Seconds</h1>
+      <p class="motion-hero-desc">
+        Transform funny stories, unhinged animal lore, and mind-blowing facts into looping animated shorts with dual-layer blur, whoosh sound effects, and Alex Hormozi captions.
+      </p>
+    </section>
+
+    <!-- DEDICATED TOPIC DISCOVERY & WORKSPACE -->
+    <section class="motion-card motion-cockpit">
+      <div class="motion-cockpit-header">
+        <div class="motion-badge-icon">🎯</div>
+        <div>
+          <h3 class="motion-card-title">1. Discover Viral Topics by Category</h3>
+          <p class="motion-card-desc">Choose a viral niche and find the 6 best high-retention topics</p>
+        </div>
+      </div>
+
+      <!-- Category Filter Bar -->
+      <div class="motion-category-bar">
+        <label for="motion-category-select" style="font-size: 11px; font-weight: 700; color: #a5b4fc; text-transform: uppercase;">Select Niche Category:</label>
+        <div style="display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap;">
+          <select id="motion-category-select" class="motion-select" style="flex: 1; min-width: 200px; font-size: 13px; padding: 10px 14px;">
+            <option value="all" selected>🔮 All Viral Categories (Mixed Gold)</option>
+            <option value="unhinged_animals">🐾 Unhinged Animals & Wild Superpowers</option>
+            <option value="dumbest_fails">🤦‍♂️ Dumbest Criminals & Real Life Fails</option>
+            <option value="mind_body">🧠 Mind-Blowing Body & Psychology Illusions</option>
+            <option value="everyday_secrets">🍕 Food & Everyday Dark Secrets</option>
+            <option value="coincidences">⚡ Crazy Coincidences & Glitch In Matrix</option>
+          </select>
+          <button type="button" id="motion-find-topics-btn" class="btn-motion-find-topics">
+            <span>🔍</span> Find 6 Viral Topics
+          </button>
+        </div>
+      </div>
+
+      <!-- 6 Interactive Topic Cards Grid -->
+      <div class="motion-topic-grid-title" style="margin-top: 18px; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">
+        Click Any Topic Below to Select:
+      </div>
+      <div class="motion-chips-grid" id="motion-topic-results-grid">
+        <!-- 6 Dynamic Topic Cards -->
+        <button type="button" class="motion-idea-chip active" data-topic="Why Cats Are Scientifically Liquid">
+          <span class="chip-emoji">🐱</span>
+          <div class="chip-text">
+            <strong>Why Cats Are Scientifically Liquid</strong>
+            <small>Feline physics make zero sense!</small>
+          </div>
+          <span class="chip-views">28.4M Views</span>
+        </button>
+        <button type="button" class="motion-idea-chip" data-topic="A Single Cloud Actually Weighs 1.1 Million Pounds">
+          <span class="chip-emoji">☁️</span>
+          <div class="chip-text">
+            <strong>A Single Cloud Weighs 1.1M Lbs</strong>
+            <small>As heavy as 100 elephants floating!</small>
+          </div>
+          <span class="chip-views">31.2M Views</span>
+        </button>
+        <button type="button" class="motion-idea-chip" data-topic="Bank Robber Wrote Demand On His Own Check">
+          <span class="chip-emoji">🤦‍♂️</span>
+          <div class="chip-text">
+            <strong>Robber Wrote Demand On Own Check</strong>
+            <small>Gave teller his full name & home address!</small>
+          </div>
+          <span class="chip-views">22.8M Views</span>
+        </button>
+        <button type="button" class="motion-idea-chip" data-topic="Your Brain Makes You 5x Prettier In Mirrors">
+          <span class="chip-emoji">🪞</span>
+          <div class="chip-text">
+            <strong>Brain Makes You 5x Prettier In Mirror</strong>
+            <small>Psychological self-image illusion!</small>
+          </div>
+          <span class="chip-views">35.9M Views</span>
+        </button>
+        <button type="button" class="motion-idea-chip" data-topic="In 1923, A Dead Jockey Won An Entire Horse Race">
+          <span class="chip-emoji">🏇</span>
+          <div class="chip-text">
+            <strong>Dead Jockey Won An Entire Race</strong>
+            <small>Frank Hayes crossed first post-mortem!</small>
+          </div>
+          <span class="chip-views">26.1M Views</span>
+        </button>
+        <button type="button" class="motion-idea-chip" data-topic="3000-Year-Old Tomb Honey Is Still Edible">
+          <span class="chip-emoji">🍯</span>
+          <div class="chip-text">
+            <strong>Ancient Egyptian Honey Still Edible</strong>
+            <small>Archaeologists literally tasted it!</small>
+          </div>
+          <span class="chip-views">19.5M Views</span>
+        </button>
+      </div>
+
+      <!-- Selected Active Topic / Custom Topic Input -->
+      <div class="motion-input-wrapper" style="margin-top: 18px;">
+        <label for="motion-topic-input">Selected Topic / Story Hook (Editable):</label>
+        <input type="text" id="motion-topic-input" class="motion-input-box" placeholder="Select a topic card above or type your own..." value="Why Cats Are Scientifically Liquid">
+      </div>
+
+      <!-- 2. STUDIO CONTROLS TOOLBAR -->
+      <div style="margin-top: 18px; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">
+        2. Configure Video & Voiceover:
+      </div>
+      <div class="motion-toolbar">
+        <div class="motion-tool-item">
+          <label>⏱️ Duration</label>
+          <select id="motion-duration-select" class="motion-select">
+            <option value="30" selected>30s Short (10 Cuts)</option>
+            <option value="45">45s Reel (15 Cuts)</option>
+            <option value="60">60s Story (20 Cuts)</option>
+          </select>
+        </div>
+
+        <div class="motion-tool-item">
+          <label>🌐 Language</label>
+          <select id="motion-language-select" class="motion-select">
+            <option value="Bengali" selected>Bengali (বাঙালি)</option>
+            <option value="Hindi">Hindi (हिंदी)</option>
+            <option value="English">English</option>
+          </select>
+        </div>
+
+        <div class="motion-tool-item">
+          <label>🎙️ Voiceover (100% Local)</label>
+          <select id="motion-voice-select" class="motion-select">
+            <!-- Dynamically populated with Piper TTS & Kokoro TTS only -->
+            <option value="piper:bn_BD-google-medium" selected>Google Medium (Piper Bengali - Local)</option>
+          </select>
+        </div>
+
+        <div class="motion-tool-item">
+          <label>🔤 Subtitle Style</label>
+          <select id="motion-subtitle-style-select" class="motion-select">
+            <option value="hormozi_yellow" selected>🔥 Hormozi Viral Yellow</option>
+            <option value="crimson_wine">🍷 ReelBot Crimson Wine</option>
+            <option value="hormozi_green">💚 Beast Voltage Green</option>
+            <option value="cyber_cyan">💎 Neon Cyber Cyan</option>
+          </select>
+        </div>
+
+        <div class="motion-tool-item">
+          <label>🎨 Animation Vibe</label>
+          <select id="motion-vibe-select" class="motion-select">
+            <option value="meme" selected>🤪 Viral Meme & Cartoon Loops</option>
+            <option value="anime">⚡ Anime Power-Up Loops</option>
+            <option value="dark_noir">🖤 Dark Comedy & Mystery Loops</option>
+            <option value="graphic">🎨 Retro Cartoon Slapstick</option>
+          </select>
+        </div>
+
+        <div class="motion-tool-item">
+          <label>💥 Sound FX</label>
+          <select id="motion-sfx-select" class="motion-select">
+            <option value="cinematic" selected>Vine Boom + Whoosh</option>
+            <option value="minimal">Whoosh Only</option>
+            <option value="none">Muted</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div style="margin-top: 20px;">
+        <button type="button" id="motion-generate-script-btn" class="btn-motion-primary">
+          <span>✨</span> Generate Motion Storyboard & Preview
+        </button>
+      </div>
+    </section>
+
+    <!-- STORYBOARD & SCENE EDITOR -->
+    <section id="motion-storyboard-section" class="motion-card hidden" style="margin-top: 24px;">
+      <div class="motion-storyboard-header">
+        <div>
+          <h3 id="motion-script-title" class="motion-card-title">Motion Storyboard</h3>
+          <p id="motion-script-meta" class="motion-card-desc">10 Scenes · Romanized Word-Pop Captions · Animated GIF Loops</p>
+        </div>
+        <button type="button" id="motion-render-btn" class="btn-motion-render">
+          <span>🚀</span> Render 1080x1920 Animated Short
+        </button>
+      </div>
+
+      <div id="motion-scenes-grid" class="motion-scenes-grid">
+        <!-- Dynamic scene tiles rendered here -->
+      </div>
+
+      <div style="margin-top: 24px; text-align: center;">
+        <button type="button" id="motion-render-btn-bottom" class="btn-motion-render btn-block">
+          <span>🚀</span> Render 1080x1920 Animated Short
+        </button>
+      </div>
+    </section>
+
+    <!-- RENDER PROGRESS & STATUS -->
+    <section id="motion-progress-section" class="motion-card hidden" style="margin-top: 24px;">
+      <div class="motion-progress-header">
+        <div class="motion-badge-icon">⚙️</div>
+        <div>
+          <h3 class="motion-card-title" id="motion-progress-stage">Synthesizing Motion Short...</h3>
+          <p class="motion-card-desc">Downloading animated GIF loops, compositing dual-layer blur & mixing SFX</p>
+        </div>
+      </div>
+
+      <div class="motion-progress-bar-container">
+        <div id="motion-progress-bar" class="motion-progress-bar" style="width: 0%;"></div>
+      </div>
+      <div id="motion-progress-pct" class="motion-progress-pct">0%</div>
+
+      <div class="motion-log-box" id="motion-log-box"></div>
+    </section>
+
+    <!-- FINAL VIDEO RESULT & YOUTUBE 1-CLICK UPLOAD -->
+    <section id="motion-result-section" class="motion-card hidden" style="margin-top: 24px;">
+      <div class="motion-result-header">
+        <div class="motion-badge-icon">🎉</div>
+        <div>
+          <h3 class="motion-card-title">Your Animated Motion Short Is Ready!</h3>
+          <p class="motion-card-desc">1080x1920 30FPS · Dual-Layer Blur · Whoosh SFX · Auto-Ducked BGM</p>
+        </div>
+      </div>
+
+      <div class="motion-result-content">
+        <!-- Video Player -->
+        <div class="motion-player-col">
+          <video id="motion-video-player" class="motion-video-preview" controls playsinline></video>
+          <div style="display: flex; gap: 10px; margin-top: 12px;">
+            <a id="motion-download-btn" href="#" download class="btn-motion-secondary" style="flex: 1; text-align: center; text-decoration: none;">
+              ⬇️ Download MP4
+            </a>
+            <button type="button" id="motion-create-another-btn" class="btn-motion-secondary" style="flex: 1;">
+              🔄 Create Another
+            </button>
+          </div>
+        </div>
+
+        <!-- YouTube 1-Click Upload & SEO Copy -->
+        <div class="motion-youtube-col">
+          <div class="motion-yt-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+              <h4 style="color: #ffffff; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                <span>📺</span> 1-Click Direct YouTube Upload
+              </h4>
+              <span id="motion-yt-status-badge" class="badge badge-success">YouTube Ready</span>
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">
+              Uploads directly to your authorized YouTube channel with <code style="color: #00ff88;">#reelbot.ai</code> automatically included.
+            </p>
+            <button type="button" id="motion-yt-upload-btn" class="btn-motion-youtube">
+              <span>▶️</span> Auto-Upload to YouTube Shorts
+            </button>
+            <div id="motion-yt-feedback" style="margin-top: 10px; font-size: 12px; font-weight: 700;"></div>
+          </div>
+
+          <!-- SEO Quick-Copy Fields -->
+          <div class="motion-seo-box">
+            <label style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">🎯 Optimized Title:</label>
+            <div class="motion-copy-row">
+              <input type="text" id="motion-seo-title" class="motion-input-sm" readonly>
+              <button type="button" class="btn-motion-copy" onclick="copyField('motion-seo-title', this)">Copy</button>
+            </div>
+
+            <label style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-top: 8px; display: block;">📝 Description:</label>
+            <div class="motion-copy-row">
+              <textarea id="motion-seo-desc" class="motion-input-sm" rows="2" readonly></textarea>
+              <button type="button" class="btn-motion-copy" onclick="copyField('motion-seo-desc', this)">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /motion-studio-workspace -->
+
+  <!-- ========================================== -->
+  <!-- WORKSPACE 3: DOCUMENTARY & BUSINESS STUDIO -->
+  <!-- ========================================== -->
+  <div id="documentary-studio-workspace" class="studio-workspace hidden">
+    <!-- HERO BANNER -->
+    <section class="docu-hero">
+      <div class="docu-hero-glow"></div>
+      <div class="docu-hero-pill">📊 60s DOCUMENTARY & BUSINESS MOTION STUDIO</div>
+      <h1 class="docu-hero-title">Create <span class="docu-title-gradient">Documentary & Business Shorts</span> in 60s</h1>
+      <p class="docu-hero-desc">
+        Transform corporate wars, billionaire secrets, and market crashes into 2.5D motion explainers with orbit networks, newspaper slams, and Alex Hormozi captions.
+      </p>
+    </section>
+
+    <!-- STEP 1: NICHE CATEGORY & TOPIC SELECTION -->
+    <section class="docu-card">
+      <div class="docu-card-header">
+        <div class="docu-badge-icon">🏢</div>
+        <div>
+          <h3 class="docu-card-title">1. Select Documentary Niche & Topic</h3>
+          <p class="docu-card-desc">Choose a curated business case study, historical mystery, or enter your custom headline.</p>
+        </div>
+      </div>
+
+      <div class="docu-grid-2">
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-category-select">Documentary Category:</label>
+          <select id="docu-category-select" class="docu-select">
+            <option value="corporate_rise_fall" selected>🏢 Corporate Rise & Fall (Nokia, Apple, Blockbuster, Kodak)</option>
+            <option value="tech_titans">🚀 Tech Titans & Billionaires (Musk, Zuckerberg, Steve Jobs, Tata)</option>
+            <option value="market_crashes">📉 Financial Heists & Crashes (Flash Crash, Lehman, Soros)</option>
+            <option value="scandals_history">🔍 Scandals & Unknown History (Pepsi Navy, McDonald's Monopoly)</option>
+          </select>
+        </div>
+
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-topic-input">Selected Topic / Headline:</label>
+          <input type="text" id="docu-topic-input" class="docu-input" placeholder="e.g. How Nokia Destroyed Its Own Empire..." value="How Nokia Killed Its Own Smartphone Empire">
+        </div>
+      </div>
+
+      <!-- Curated Topics Grid -->
+      <div style="margin-top: 16px;">
+        <label class="docu-label">🔥 Curated Viral Business Cases (Click to Select):</label>
+        <div class="docu-topics-grid" id="docu-topics-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: VIDEO DURATION, PACING & VISUAL METAPHORS -->
+    <section class="docu-card">
+      <div class="docu-card-header">
+        <div class="docu-badge-icon">🎛️</div>
+        <div>
+          <h3 class="docu-card-title">2. Video Pacing, Aesthetics & Visual Metaphors</h3>
+          <p class="docu-card-desc">Fine-tune every visual and acoustic parameter before generating.</p>
+        </div>
+      </div>
+
+      <!-- Duration Selection -->
+      <div class="docu-form-group">
+        <label class="docu-label">Target Duration & Narrative Pacing:</label>
+        <div class="docu-grid-4" style="margin-top: 6px;">
+          <div class="docu-duration-pill" data-duration="30">
+            <strong>30 Seconds</strong><br><small>10 Fast Beats</small>
+          </div>
+          <div class="docu-duration-pill" data-duration="45">
+            <strong>45 Seconds</strong><br><small>14 Punchy Beats</small>
+          </div>
+          <div class="docu-duration-pill active" data-duration="60">
+            <strong>60 Seconds</strong><br><small>18 Full Beats</small>
+          </div>
+          <div class="docu-duration-pill" data-duration="90">
+            <strong>90 Seconds</strong><br><small>25 Deep Beats</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Theme & Language -->
+      <div class="docu-grid-3" style="margin-top: 18px;">
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-theme-select">Visual Theme & Grade:</label>
+          <select id="docu-theme-select" class="docu-select">
+            <option value="dark_slate" selected>🌑 Dark Slate & Amber Gold (MagnatesMedia)</option>
+            <option value="vintage_archive">🗞️ Vintage Archive & 90s Paper (Vox)</option>
+            <option value="cyber_tech">💻 Cyber Blue & Grid (Silicon Valley)</option>
+            <option value="wall_street">📈 Wall Street Emerald & Crimson (Finance)</option>
+          </select>
+        </div>
+
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-lang-select">Script Language:</label>
+          <select id="docu-lang-select" class="docu-select">
+            <option value="English" selected>🇺🇸 English (Universal Viral)</option>
+            <option value="Bengali">🇧🇩 Bengali (বাংলা সাবলীল)</option>
+            <option value="Hindi">🇮🇳 Hindi (हिन्दी)</option>
+          </select>
+        </div>
+
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-speed-select">Voice Narration Pacing:</label>
+          <select id="docu-speed-select" class="docu-select">
+            <option value="-10%">🎙️ -10% Dramatic & Suspenseful</option>
+            <option value="+0%" selected>🎙️ +0% Standard Documentary</option>
+            <option value="+15%">⚡ +15% High-Retention Fast</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Allowed Metaphors Toggle -->
+      <div class="docu-form-group" style="margin-top: 18px;">
+        <label class="docu-label">Included 2.5D Visual Metaphors:</label>
+        <div class="docu-metaphor-row">
+          <label class="docu-metaphor-pill">
+            <input type="checkbox" class="docu-meta-chk" value="archival_photo_pan" checked>
+            <span>📸 Archival Photo Ken Burns Pan</span>
+          </label>
+          <label class="docu-metaphor-pill">
+            <input type="checkbox" class="docu-meta-chk" value="newspaper_slam" checked>
+            <span>📰 Newspaper Slam & Neon Highlighter</span>
+          </label>
+          <label class="docu-metaphor-pill">
+            <input type="checkbox" class="docu-meta-chk" value="parallax_cutout" checked>
+            <span>🖼️ 2.5D Grounded Cutout & B-Roll</span>
+          </label>
+          <label class="docu-metaphor-pill">
+            <input type="checkbox" class="docu-meta-chk" value="split_comparison" checked>
+            <span>⚖️ Rivalry Split-Screen (VS Showdown)</span>
+          </label>
+          <label class="docu-metaphor-pill">
+            <input type="checkbox" class="docu-meta-chk" value="financial_stat" checked>
+            <span>💰 Financial Stat & Metric Card</span>
+          </label>
+          <label class="docu-metaphor-pill">
+            <input type="checkbox" class="docu-meta-chk" value="action_gif" checked>
+            <span>⚡ Action GIF & Archival Loop</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Voiceover & Hormozi Subtitles -->
+      <div class="docu-grid-3" style="margin-top: 18px;">
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-voice-select">Narrator Voice (Kokoro / Piper):</label>
+          <select id="docu-voice-select" class="docu-select">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-sub-color-select">Hormozi Subtitle Accent:</label>
+          <select id="docu-sub-color-select" class="docu-select">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div class="docu-form-group">
+          <label class="docu-label" for="docu-font-select">Subtitle Typography:</label>
+          <select id="docu-font-select" class="docu-select">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Cinematic SFX & BGM Controls -->
+      <div class="docu-grid-2" style="margin-top: 18px;">
+        <div class="docu-form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="docu-label" for="docu-sfx-vol">Cinematic SFX Pack:</label>
+            <label style="font-size: 11px; display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox" id="docu-sfx-toggle" checked> Enabled
+            </label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+            <input type="range" id="docu-sfx-vol" min="0" max="100" value="60" style="flex: 1; accent-color: var(--docu-gold);">
+            <span id="docu-sfx-val" style="font-size: 12px; font-weight: 700; width: 40px;">60%</span>
+          </div>
+          <small style="color: #94a3b8; font-size: 10px;">Includes: Paper slam, camera shutter, cash register, whoosh & sub-bass drop.</small>
+        </div>
+
+        <div class="docu-form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="docu-label" for="docu-bgm-select">Documentary BGM:</label>
+            <span id="docu-bgm-val" style="font-size: 12px; font-weight: 700; width: 40px; text-align: right;">15%</span>
+          </div>
+          <select id="docu-bgm-select" class="docu-select" style="margin-top: 6px;">
+            <!-- Populated dynamically -->
+          </select>
+          <input type="range" id="docu-bgm-vol" min="0" max="50" value="15" style="margin-top: 6px; accent-color: var(--docu-gold);">
+        </div>
+      </div>
+
+      <!-- Primary Action: Generate Storyboard -->
+      <div style="margin-top: 24px; text-align: center;">
+        <button type="button" id="docu-gen-storyboard-btn" class="btn-docu-gold" style="width: 100%; font-size: 16px;">
+          <span>🎛️</span> Generate & Customize Storyboard Beats
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 3: STORYBOARD PRO CUSTOMIZER (INSPECTOR) -->
+    <section class="docu-card hidden" id="docu-storyboard-section">
+      <div class="docu-card-header">
+        <div class="docu-badge-icon">📋</div>
+        <div>
+          <h3 class="docu-card-title">3. Storyboard Pro Customizer</h3>
+          <p class="docu-card-desc" id="docu-storyboard-title">Review, tweak narration, or swap visual metaphors for every beat.</p>
+        </div>
+      </div>
+
+      <div class="docu-storyboard-box">
+        <div class="docu-beat-list" id="docu-beat-list">
+          <!-- Populated with beat cards -->
+        </div>
+      </div>
+
+      <div id="docu-render-action-card" class="action-row" style="margin-top: 20px;">
+        <button type="button" id="docu-start-render-btn" class="btn-docu-gold" style="width: 100%; font-size: 17px; padding: 16px;">
+          <span>🚀</span> Render Complete 1080x1920 Documentary Short
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 4: REAL-TIME PROGRESS & TERMINAL LOGS -->
+    <section class="docu-card hidden" id="docu-progress-card">
+      <div class="docu-card-header">
+        <div class="docu-badge-icon">⚡</div>
+        <div>
+          <h3 class="docu-card-title">4. Synthesizing & Rendering 2.5D Motion</h3>
+          <p class="docu-card-desc" id="docu-progress-stage">Initializing rendering pipeline...</p>
+        </div>
+      </div>
+
+      <div class="docu-progress-bar">
+        <div class="docu-progress-fill" id="docu-progress-fill"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 14px;">
+        <span style="color: #94a3b8;">Status: In Progress</span>
+        <span id="docu-progress-percent" style="color: #fbbf24; font-weight: 800;">0%</span>
+      </div>
+
+      <div class="docu-terminal" id="docu-terminal-logs">
+        <div>[00:00.00] ⚡ Documentary Studio Engine Initialized.</div>
+      </div>
+    </section>
+
+    <!-- STEP 5: VIDEO PREVIEW & 1-CLICK YOUTUBE UPLOAD -->
+    <section class="docu-card hidden" id="docu-result-card">
+      <div class="docu-card-header">
+        <div class="docu-badge-icon">🎬</div>
+        <div>
+          <h3 class="docu-card-title">5. Your Documentary Short is Ready!</h3>
+          <p class="docu-card-desc">1080x1920 Full HD with Hormozi Captions and Multi-Track SFX.</p>
+        </div>
+      </div>
+
+      <div class="docu-grid-2" style="align-items: start;">
+        <div>
+          <video id="docu-video-player" controls playsinline style="width: 100%; max-height: 520px; border-radius: 12px; background: #000000; border: 1px solid var(--docu-border);"></video>
+          <div style="display: flex; gap: 10px; margin-top: 14px;">
+            <a id="docu-download-btn" href="#" download class="btn-docu-gold" style="flex: 1; text-decoration: none;">
+              ⬇️ Download MP4
+            </a>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--docu-border); border-radius: 12px; padding: 18px;">
+            <h4 style="color: #ffffff; font-size: 15px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+              <span>📺</span> 1-Click Direct YouTube Upload
+            </h4>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">
+              Uploads directly to your connected YouTube Shorts channel with <code style="color: #fbbf24;">#reelbot.ai</code> automatically appended.
+            </p>
+
+            <div class="docu-form-group" style="margin-bottom: 10px;">
+              <label class="docu-label" for="docu-yt-title">Title:</label>
+              <input type="text" id="docu-yt-title" class="docu-input" style="font-size: 12px;">
+            </div>
+
+            <div class="docu-form-group" style="margin-bottom: 14px;">
+              <label class="docu-label" for="docu-yt-desc">Description:</label>
+              <textarea id="docu-yt-desc" class="docu-textarea" rows="3" style="font-size: 12px;"></textarea>
+            </div>
+
+            <button type="button" id="docu-yt-upload-btn" class="btn-docu-gold" style="width: 100%; background: #dc2626; color: #ffffff;">
+              <span>▶️</span> Auto-Upload to YouTube Shorts
+            </button>
+            <div id="docu-yt-feedback" style="margin-top: 10px; font-size: 12px; font-weight: 700;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /documentary-studio-workspace -->
+</main>
 
   <!-- FLOATING DEVELOPER ACTION BUTTON -->
   <button id="floating-creator-btn" class="floating-creator-btn" title="About the Creator">
@@ -406,7 +1018,7 @@
               "The story of <strong>ReelBot.Ai</strong> began with a disruptive dream: Why should aspiring creators and storytellers pay hundreds of dollars every month for expensive AI video subscriptions just to make 60-second shorts?
             </p>
             <p class="creator-bio">
-              I built ReelBot.Ai to democratize viral video production — combining cutting-edge LLMs (Gemini AI), hyper-realistic neural voice synthesis, dynamic stock footage sourcing, and high-performance FFmpeg rendering into a single <strong>100% free, local-first engine</strong>. Everyone deserves the power to turn raw ideas into viral million-view reels in seconds."
+              I built ReelBot.Ai to democratize viral video production — combining cutting-edge LLMs (Gemini AI), Indic Neural Voice AI (Sarvam AI & AI4Bharat), real-time Google search (Serper), and high-performance FFmpeg rendering into a single <strong>100% free, local-first engine</strong>."
             </p>
           </div>
 
@@ -430,7 +1042,7 @@
     </div>
   </div>
 
-  <!-- CONFIGURE MODAL (SETTINGS + STATUS BADGES + BULK BGM) -->
+  <!-- CONFIGURE MODAL (SETTINGS + STATUS BADGES + SARVAM AI + AI4BHARAT + SERPER API) -->
   <div id="settings-modal" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="modal-header">
@@ -447,13 +1059,44 @@
           <label style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">System Services Connection Status</label>
           <div class="status-group-modal" id="status-badges">
             <span id="gemini-badge" class="badge badge-pending">Gemini AI</span>
+            <span id="sarvam-badge" class="badge badge-pending">Sarvam AI</span>
+            <span id="ai4bharat-badge" class="badge badge-pending">AI4Bharat</span>
+            <span id="serper-badge" class="badge badge-pending">Serper Search</span>
             <span id="pexels-badge" class="badge badge-pending">Pexels Stock</span>
             <span id="pixabay-badge" class="badge badge-pending">Pixabay Stock</span>
+            <span id="youtube-badge" class="badge badge-pending">YouTube API</span>
           </div>
         </div>
 
-        <!-- API Keys -->
-        <div class="form-group" style="margin-top: 14px;">
+        <!-- Sarvam AI API Key (Studio Indian Voices) -->
+        <div class="form-group" style="margin-top: 14px; background: rgba(255, 153, 0, 0.08); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 153, 0, 0.35);">
+          <div class="label-row">
+            <label for="setting-sarvam-key" style="color: #ffaa33; font-weight: 700;">🇮🇳 Sarvam AI API Key (Bulbul Neural Indic Studio Voices)</label>
+            <a href="https://dashboard.sarvam.ai/" target="_blank" class="link-hint" style="color: #ffaa33;">Get Sarvam Key ↗</a>
+          </div>
+          <input type="password" id="setting-sarvam-key" placeholder="Enter Sarvam AI API Key (Bengali / Hindi natural studio)..." style="border-color: rgba(255, 153, 0, 0.45);">
+        </div>
+
+        <!-- AI4Bharat API Key -->
+        <div class="form-group" style="margin-top: 10px; background: rgba(0, 229, 255, 0.06); padding: 12px; border-radius: 8px; border: 1px solid rgba(0, 229, 255, 0.3);">
+          <div class="label-row">
+            <label for="setting-ai4bharat-key" style="color: var(--accent-cyan); font-weight: 700;">🇮🇳 AI4Bharat API Key (IndicTTS Neural Engine)</label>
+            <a href="https://ai4bharat.iitm.ac.in/" target="_blank" class="link-hint" style="color: var(--accent-cyan);">AI4Bharat Portal ↗</a>
+          </div>
+          <input type="password" id="setting-ai4bharat-key" placeholder="Enter AI4Bharat / IndicTTS API Key..." style="border-color: rgba(0, 229, 255, 0.4);">
+        </div>
+
+        <!-- Serper API Key (Real-time Live News Search) -->
+        <div class="form-group" style="margin-top: 10px; background: rgba(196, 30, 58, 0.08); padding: 12px; border-radius: 8px; border: 1px solid rgba(196, 30, 58, 0.35);">
+          <div class="label-row">
+            <label for="setting-serper-key" style="color: var(--wine-bright); font-weight: 700;">🔍 Serper API Key (Live Google True Crime News)</label>
+            <a href="https://serper.dev" target="_blank" class="link-hint" style="color: var(--wine-bright);">Get Free Key (2,500 Free Searches) ↗</a>
+          </div>
+          <input type="password" id="setting-serper-key" placeholder="Enter Serper API Key for real-time live search..." style="border-color: rgba(196, 30, 58, 0.4);">
+        </div>
+
+        <!-- Gemini API Key -->
+        <div class="form-group" style="margin-top: 12px;">
           <div class="label-row">
             <label for="setting-gemini-key">Google Gemini API Key (Required for Scripts)</label>
             <a href="https://aistudio.google.com/app/apikey" target="_blank" class="link-hint">Get Free Key ↗</a>
@@ -461,6 +1104,7 @@
           <input type="password" id="setting-gemini-key" placeholder="AIzaSy...">
         </div>
 
+        <!-- Pexels API Key -->
         <div class="form-group">
           <div class="label-row">
             <label for="setting-pexels-key">Pexels API Key (Free HD Stock Videos)</label>
@@ -469,12 +1113,22 @@
           <input type="password" id="setting-pexels-key" placeholder="Pexels API Key...">
         </div>
 
+        <!-- Pixabay API Key -->
         <div class="form-group">
           <div class="label-row">
             <label for="setting-pixabay-key">Pixabay API Key (Backup Stock Videos)</label>
             <a href="https://pixabay.com/api/docs/" target="_blank" class="link-hint">Get Free Key ↗</a>
           </div>
           <input type="password" id="setting-pixabay-key" placeholder="Pixabay Key...">
+        </div>
+
+        <!-- YouTube OAuth Credentials Box -->
+        <div class="form-group" style="margin-top: 16px;">
+          <div class="label-row">
+            <label for="setting-youtube-json">🔴 YouTube Auto-Upload Credentials (client_secret.json)</label>
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="link-hint">Google Cloud Console ↗</a>
+          </div>
+          <textarea id="setting-youtube-json" rows="2" placeholder='Paste your Google Cloud OAuth2 Client Secret JSON here for direct YouTube uploads...' style="font-size: 11px; font-family: monospace;"></textarea>
         </div>
 
         <!-- Bulk BGM Upload Section Inside Configure -->
@@ -499,6 +1153,8 @@
     </div>
   </div>
 
-  <script src="/app.js"></script>
+  <script src="/app.js?v=2.6.0"></script>
+  <script src="/motion_studio.js?v=2.6.0"></script>
+  <script src="/documentary_studio.js?v=1.0.0"></script>
 </body>
 </html>

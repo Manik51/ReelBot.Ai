@@ -1,0 +1,30 @@
+# Virtual Environment
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local storage and temp files
+storage/outputs/*
+storage/output/*
+storage/temp/*
+storage/models/*
+storage/piper_models/*
+storage/client_secret.json
+!storage/temp/.gitkeep
+!storage/outputs/.gitkeep
+
+# Secret API Keys
+.env
+*.env.local
+
+# Binaries & Large Tools
+cloudflared.exe
+*.zip
+
+# System & Editor files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

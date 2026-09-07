@@ -1,0 +1,445 @@
+/* ==========================================================================
+   DOCUMENTARY & BUSINESS ANALYSIS STUDIO — DEDICATED STYLESHEET
+   Sleek 2.5D Motion Workspace (Slate, Luxury Amber & Tech Cyan)
+   100% Independent CSS Module
+   ========================================================================== */
+
+:root {
+  --docu-bg: #0b0f19;
+  --docu-card-bg: rgba(15, 23, 42, 0.75);
+  --docu-border: rgba(51, 65, 85, 0.6);
+  --docu-border-hover: rgba(217, 119, 6, 0.7);
+  --docu-gold: #d97706;
+  --docu-gold-glow: rgba(217, 119, 6, 0.25);
+  --docu-cyan: #0ea5e9;
+  --docu-emerald: #10b981;
+  --docu-crimson: #ef4444;
+  --docu-text: #f8fafc;
+  --docu-text-muted: #94a3b8;
+}
+
+#documentary-studio-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 0 60px 0;
+  color: var(--docu-text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ── HERO BANNER ────────────────────────────────────────────────────────── */
+.docu-hero {
+  position: relative;
+  border-radius: 20px;
+  background: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.15), transparent 70%),
+              linear-gradient(180deg, #111827 0%, #0b0f19 100%);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  padding: 36px 28px;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.docu-hero-glow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 200px;
+  background: radial-gradient(ellipse, var(--docu-gold-glow), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.docu-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(217, 119, 6, 0.15);
+  border: 1px solid var(--docu-gold);
+  color: #fbbf24;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.docu-hero-title {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.docu-title-gradient {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 50%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.docu-hero-desc {
+  color: var(--docu-text-muted);
+  font-size: 14px;
+  max-width: 740px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── COCKPIT CARDS ──────────────────────────────────────────────────────── */
+.docu-card {
+  background: var(--docu-card-bg);
+  border: 1px solid var(--docu-border);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease;
+}
+
+.docu-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.docu-badge-icon {
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(217, 119, 6, 0.15);
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.docu-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.docu-card-desc {
+  font-size: 12px;
+  color: var(--docu-text-muted);
+}
+
+/* ── PRESET CHIPS & TOPICS ──────────────────────────────────────────────── */
+.docu-topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.docu-topic-chip {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #ffffff;
+}
+
+.docu-topic-chip:hover {
+  background: rgba(217, 119, 6, 0.15);
+  border-color: var(--docu-gold);
+  transform: translateY(-2px);
+}
+
+.docu-topic-chip.active {
+  background: rgba(217, 119, 6, 0.25);
+  border-color: #fbbf24;
+  box-shadow: 0 0 16px rgba(217, 119, 6, 0.35);
+}
+
+.docu-topic-chip strong {
+  font-size: 13px;
+  color: #f1f5f9;
+}
+
+.docu-topic-chip small {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+/* ── FORM ELEMENTS & SELECTORS ──────────────────────────────────────────── */
+.docu-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.docu-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.docu-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.docu-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.docu-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.docu-input, .docu-select, .docu-textarea {
+  background: #090d16;
+  border: 1px solid var(--docu-border);
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 10px 14px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.docu-input:focus, .docu-select:focus, .docu-textarea:focus {
+  border-color: var(--docu-gold);
+  box-shadow: 0 0 10px var(--docu-gold-glow);
+}
+
+/* ── VISUAL METAPHOR PILLS ──────────────────────────────────────────────── */
+.docu-metaphor-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.docu-metaphor-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--docu-border);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+}
+
+.docu-metaphor-pill input {
+  accent-color: var(--docu-gold);
+}
+
+.docu-metaphor-pill:hover {
+  border-color: var(--docu-gold);
+}
+
+/* ── DURATION SELECTOR CARDS ────────────────────────────────────────────── */
+.docu-duration-pill {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--docu-border);
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.docu-duration-pill:hover {
+  border-color: var(--docu-gold);
+}
+
+.docu-duration-pill.active {
+  background: rgba(217, 119, 6, 0.25);
+  border-color: #fbbf24;
+  color: #fbbf24;
+  font-weight: 800;
+}
+
+/* ── STORYBOARD ACCORDION & BEAT CARDS ──────────────────────────────────── */
+.docu-storyboard-box {
+  background: #090d16;
+  border: 1px solid var(--docu-border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 14px;
+}
+
+.docu-beat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.docu-beat-item {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.2s;
+}
+
+.docu-beat-item:hover {
+  border-color: rgba(217, 119, 6, 0.5);
+}
+
+.docu-beat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.docu-beat-num {
+  background: var(--docu-gold);
+  color: #000000;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.docu-beat-selects {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.docu-beat-select {
+  background: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #f1f5f9;
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+.docu-beat-narration {
+  background: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #f8fafc;
+  font-size: 12px;
+  padding: 8px 10px;
+  resize: vertical;
+  width: 100%;
+}
+
+/* ── BUTTONS ────────────────────────────────────────────────────────────── */
+.btn-docu-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+  color: #000000;
+  font-weight: 800;
+  font-size: 15px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(217, 119, 6, 0.4);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-docu-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(217, 119, 6, 0.6);
+}
+
+.btn-docu-secondary {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--docu-border);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-docu-secondary:hover {
+  background: rgba(51, 65, 85, 0.9);
+  border-color: var(--docu-gold);
+}
+
+/* ── THREE-WAY MODE SWITCHER (Cinema | Motion | Documentary) ────────────── */
+.mode-tab-btn.mode-docu {
+  color: #fbbf24;
+}
+
+.mode-tab-btn.mode-docu.active {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.35) 0%, rgba(245, 158, 11, 0.2) 100%);
+  border-color: #fbbf24;
+  box-shadow: 0 0 12px rgba(217, 119, 6, 0.4);
+}
+
+/* ── PROGRESS & LOGS ────────────────────────────────────────────────────── */
+.docu-progress-bar {
+  height: 10px;
+  background: #1e293b;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.docu-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #d97706, #fbbf24);
+  transition: width 0.3s ease;
+}
+
+.docu-terminal {
+  background: #050811;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #38bdf8;
+  max-height: 220px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
